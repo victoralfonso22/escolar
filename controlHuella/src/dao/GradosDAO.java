@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import conexion.Conexion;
 import clases.Grados;
 
@@ -24,7 +26,7 @@ public class GradosDAO {
 		   
 		  connection=miConexion.getConnection();
 		   
-		  String consulta="SELECT id,grado,id_escuela FROM grados where id_escuela = 2";
+		  String consulta="SELECT id,grado FROM grados;";
 		   
 		  try {
 		   if (connection!=null) {
@@ -35,13 +37,13 @@ public class GradosDAO {
 		     grados=new Grados();
 		     grados.setId(result.getInt("id"));
 		     grados.setGrado(result.getString("grado"));
-		     grados.setId_escuela(result.getInt("id_escuela"));		     
+		         
 		           
 		     estudiantesList.add(grados);
 		    }  
 		   }
 		  } catch (SQLException e) {
-		   System.out.println("Error en la consulta de grados: "+e.getMessage());
+			  JOptionPane.showMessageDialog(null, "Error en la consulta de grados: "+e.getMessage(), "Aviso", JOptionPane.PLAIN_MESSAGE);
 		  }finally{
 		   try {
 		    connection.close();

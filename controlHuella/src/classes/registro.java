@@ -33,10 +33,13 @@ import javax.swing.JOptionPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
+import javax.swing.UIManager;
 
 import java.awt.event.ActionListener;
+import java.beans.FeatureDescriptor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
@@ -65,9 +68,14 @@ import javax.swing.border.TitledBorder;
 import java.awt.SystemColor;
 
 import javax.swing.border.LineBorder;
+import javax.swing.text.NumberFormatter;
 import javax.swing.JFormattedTextField;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class registro implements ActionListener {
+	
+	
 
 	private JFrame frmSistemaDeResgistro;
 	private JTextField textCurp;
@@ -80,6 +88,8 @@ public class registro implements ActionListener {
 	private static final String ACT_SALIR = "exit";
 	private static final String ACT_PERSONAL = "personal";
 	private static final String ACT_ALUMNO = "alumno";
+	private static final String ACT_GUARDAR = "guardar";
+	
 	private JTextField textEdad;
 	private JTextField textCalle;
 	private JTextField textNumCasa;
@@ -89,7 +99,12 @@ public class registro implements ActionListener {
 	
 	private JComboBox comboGrado;
 	private JLabel labelGrado;
-
+	String fechaConFormato;
+	
+	ButtonGroup radios;
+	JRadioButton rdbtnPersonal;
+	JRadioButton rdbtnAlumno;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -118,6 +133,7 @@ public class registro implements ActionListener {
 	 */
 	private void initialize() {
 		frmSistemaDeResgistro = new JFrame();
+		frmSistemaDeResgistro.setBackground(Color.WHITE);
 		frmSistemaDeResgistro.setResizable(false);
 		frmSistemaDeResgistro.setTitle("Sistema de resgistro y administraci\u00F3n escolar");
 		frmSistemaDeResgistro.getContentPane().setBackground(Color.WHITE);
@@ -137,12 +153,13 @@ public class registro implements ActionListener {
 		labelNombre.setForeground(SystemColor.textHighlight);
 		labelNombre.setFont(new Font("Arial", Font.BOLD, 14));
 		
-		JLabel labelTipo = new JLabel("Tipo de usuario");
+		JLabel labelTipo = new JLabel("Tipo de registro");
 		labelTipo.setForeground(SystemColor.textHighlight);
 		labelTipo.setFont(new Font("Arial", Font.BOLD, 14));
 		
 		textCurp = new JTextField();
-		textCurp.setFont(new Font("Arial", Font.PLAIN, 14));
+		textCurp.setBorder(UIManager.getBorder("TextField.border"));
+		textCurp.setFont(new Font("Arial", Font.BOLD, 13));
 		textCurp.setColumns(10);
 		
 		textNombre = new JTextField();
@@ -150,14 +167,12 @@ public class registro implements ActionListener {
 		textNombre.setColumns(10);
 		
 		JButton btnGuardar = new JButton("Guardar");
-		btnGuardar.setVerticalTextPosition(SwingConstants.BOTTOM);
-		btnGuardar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+		btnGuardar.setVerticalTextPosition(SwingConstants.BOTTOM);		
 		btnGuardar.setForeground(new Color(30, 144, 255));
 		btnGuardar.setBackground(Color.WHITE);
 		btnGuardar.setFont(new Font("Arial", Font.BOLD, 15));
+		btnGuardar.setActionCommand(ACT_GUARDAR);
+		btnGuardar.addActionListener(this);
 		
 		
 		// Boton para salir de la ventana
@@ -171,14 +186,14 @@ public class registro implements ActionListener {
 		
 		// radioButtons
 		
-		JRadioButton rdbtnPersonal = new JRadioButton("Personal");
+		rdbtnPersonal = new JRadioButton("Personal");		
 		rdbtnPersonal.setBackground(Color.WHITE);
 		rdbtnPersonal.setHorizontalAlignment(SwingConstants.LEFT);
 		rdbtnPersonal.setFont(new Font("Arial", Font.PLAIN, 14));
 		rdbtnPersonal.setActionCommand(ACT_PERSONAL);
 		rdbtnPersonal.addActionListener(this);
 		
-		JRadioButton rdbtnAlumno = new JRadioButton("Alumno");
+		rdbtnAlumno = new JRadioButton("Alumno");
 		rdbtnAlumno.setBackground(Color.WHITE);
 		rdbtnAlumno.setHorizontalAlignment(SwingConstants.LEFT);
 		rdbtnAlumno.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -187,7 +202,7 @@ public class registro implements ActionListener {
 		
 		// Agrupamos los radioButtons
 		
-		ButtonGroup radios = new ButtonGroup();
+		radios = new ButtonGroup();
 		
 		radios.add(rdbtnAlumno);
 		radios.add(rdbtnPersonal);
@@ -199,7 +214,21 @@ public class registro implements ActionListener {
 		labelEdad.setForeground(SystemColor.textHighlight);
 		labelEdad.setFont(new Font("Arial", Font.BOLD, 14));
 				
-		textEdad = new JTextField();
+		textEdad = new JTextField();		
+		
+		/***** SOLO PERMITE NÚMEROS**************/
+		textEdad.addKeyListener(new KeyAdapter() {			
+			@Override
+			public void keyTyped(KeyEvent evt) {
+				try {
+					char car = evt.getKeyChar();
+			        if( textEdad.getText().length()>=8 ) evt.consume();
+			        if(( car<'0' || car>'9' )) evt.consume();
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(frmSistemaDeResgistro, "El campo solo permite números.", "Aviso", JOptionPane.PLAIN_MESSAGE);
+				}
+			}
+		});
 		textEdad.setFont(new Font("Arial", Font.PLAIN, 14));
 		textEdad.setColumns(10);
 		
@@ -383,7 +412,7 @@ public class registro implements ActionListener {
 		}
 		
 		
-		labelGrado = new JLabel("Grado");
+		labelGrado = new JLabel("Grado y grupo");
 		labelGrado.setForeground(SystemColor.textHighlight);
 		labelGrado.setFont(new Font("Arial", Font.BOLD, 14));
 		GroupLayout groupLayout = new GroupLayout(frmSistemaDeResgistro.getContentPane());
@@ -497,6 +526,146 @@ public class registro implements ActionListener {
 			panelAlumno.setVisible(true);
 			comboGrado.setVisible(true);
 			labelGrado.setVisible(true);
+		}else if (e.getActionCommand().equals(ACT_GUARDAR)){
+			
+		/********************************** VALIDACIONES DE LOS CAMPOS A INSERTAR **********************************************/	
+			boolean bandera = true;
+			String mensaje = "No debe dejar ningun campo vacio\n";	
+			
+			// curp
+			if(textCurp.getText().trim().isEmpty()){
+				textCurp.setBorder(new LineBorder(Color.RED));
+				bandera = false;
+				mensaje = mensaje+" CURP\n";					
+			}else{
+				textCurp.setBorder(null);
+			}
+			
+			// nombre
+			if(textNombre.getText().trim().isEmpty()){
+			textNombre.setBorder(new LineBorder(Color.RED));
+			bandera = false;
+			mensaje = mensaje+" Nombre\n";
+			}else{
+				textNombre.setBorder(null);
+			}
+			
+			// fecha nacimiento
+			if(dateFechaNacimiento.getDate()==null){
+				dateFechaNacimiento.getDateEditor().getUiComponent().setBorder(new LineBorder(Color.RED));
+				
+				bandera = false;
+				mensaje = mensaje+" Fecha de nacimiento\n";
+				}else{
+					
+					SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
+					fechaConFormato = formatoFecha.format(dateFechaNacimiento.getDate());
+					
+					dateFechaNacimiento.getDateEditor().getUiComponent().setBorder(new LineBorder(Color.decode("#7A8A99")));
+				}
+
+			// validacion de edad
+			if(textEdad.getText().trim().isEmpty()){
+			textEdad.setBorder(new LineBorder(Color.RED));
+			
+			bandera = false;
+			mensaje = mensaje+" Edad\n";
+			}else{
+				textEdad.setBorder(new LineBorder(Color.decode("#7A8A99")));
+			}
+			
+			// validacion de los radiobutons
+			if(!rdbtnAlumno.isSelected() & !rdbtnAlumno.isSelected()  ){
+				rdbtnAlumno.setBackground(Color.RED);
+				rdbtnPersonal.setBackground(Color.RED);			
+				bandera = false;
+				mensaje = mensaje+" Tipo de registro\n";
+			}else{
+				rdbtnAlumno.setBackground(Color.WHITE);
+				rdbtnPersonal.setBackground(Color.WHITE);
+			}
+			
+			
+			/************************** VALIDACIONES CUANDO ES TIPO ALUMNO *****************************************/
+			if(rdbtnAlumno.isSelected()){
+				if(textTutorNom.getText().trim().isEmpty()){
+					textTutorNom.setBorder(new LineBorder(Color.RED));
+					
+					bandera = false;
+					mensaje = mensaje+" Nombre del tutor\n";
+					}else{
+						textTutorNom.setBorder(new LineBorder(Color.decode("#7A8A99")));
+					}
+				
+				if(textTutorOcupa.getText().trim().isEmpty()){
+					textTutorOcupa.setBorder(new LineBorder(Color.RED));
+					
+					bandera = false;
+					mensaje = mensaje+" Ocupación del tutor\n";
+					}else{
+						textTutorOcupa.setBorder(new LineBorder(Color.decode("#7A8A99")));
+					}
+				
+				if(textCalle.getText().trim().isEmpty()){
+					textCalle.setBorder(new LineBorder(Color.RED));
+					
+					bandera = false;
+					mensaje = mensaje+" Calle\n";
+					}else{
+						textCalle.setBorder(new LineBorder(Color.decode("#7A8A99")));
+					}
+				
+				if(textNumCasa.getText().trim().isEmpty()){
+					textNumCasa.setBorder(new LineBorder(Color.RED));
+					
+					bandera = false;
+					mensaje = mensaje+" Número \n";
+					}else{
+						textNumCasa.setBorder(new LineBorder(Color.decode("#7A8A99")));
+					}
+				
+				if(textColonia.getText().trim().isEmpty()){
+					textColonia.setBorder(new LineBorder(Color.RED));
+					
+					bandera = false;
+					mensaje = mensaje+" Colonia \n";
+					}else{
+						textColonia.setBorder(new LineBorder(Color.decode("#7A8A99")));
+					}
+				
+				if(textCp.getText().trim().isEmpty()){
+					textCp.setBorder(new LineBorder(Color.RED));
+					
+					bandera = false;
+					mensaje = mensaje+" Código postal \n";
+					}else{
+						textCp.setBorder(new LineBorder(Color.decode("#7A8A99")));
+					}
+				
+				if(textNumeroTel.getText().trim().isEmpty()){
+					textNumeroTel.setBorder(new LineBorder(Color.RED));
+					
+					bandera = false;
+					mensaje = mensaje+" Número telefónico \n";
+					}else{
+						textNumeroTel.setBorder(new LineBorder(Color.decode("#7A8A99")));
+					}
+			
+				if(comboGrado.getSelectedItem().equals("Selecciona")){
+					comboGrado.setBorder(new LineBorder(Color.RED));
+					
+					bandera = false;
+					mensaje = mensaje+" Grado \n";
+					}else{
+						comboGrado.setBorder(new LineBorder(Color.decode("#7A8A99")));
+					}
+			}
+			
+			
+			if(!bandera){
+				JOptionPane.showMessageDialog(frmSistemaDeResgistro, mensaje, "Aviso", JOptionPane.PLAIN_MESSAGE);
+			
+			}
 		}
 	}
 }
