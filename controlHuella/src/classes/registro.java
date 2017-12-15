@@ -187,6 +187,7 @@ public class registro implements ActionListener {
 		// radioButtons
 		
 		rdbtnPersonal = new JRadioButton("Personal");		
+		rdbtnPersonal.setForeground(Color.BLACK);
 		rdbtnPersonal.setBackground(Color.WHITE);
 		rdbtnPersonal.setHorizontalAlignment(SwingConstants.LEFT);
 		rdbtnPersonal.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -575,7 +576,7 @@ public class registro implements ActionListener {
 			}
 			
 			// validacion de los radiobutons
-			if(!rdbtnAlumno.isSelected() & !rdbtnAlumno.isSelected()  ){
+			if(!rdbtnAlumno.isSelected() && !rdbtnPersonal.isSelected()  ){
 				rdbtnAlumno.setBackground(Color.RED);
 				rdbtnPersonal.setBackground(Color.RED);			
 				bandera = false;
