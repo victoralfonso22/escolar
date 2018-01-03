@@ -1,9 +1,8 @@
-/UareUSampleJava.jar
 /build.bat
+/clases/
 /classes/
-/org/
-/utilerias/
-/baseDatos/
 /conexion/
 /dao/
-/clases/
+/dpuareu.jar
+/org/
+/utilerias/

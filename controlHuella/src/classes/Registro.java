@@ -32,6 +32,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JRadioButton;
 import javax.swing.UIManager;
 
@@ -73,11 +74,13 @@ import javax.swing.JFormattedTextField;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class registro implements ActionListener {
+import java.awt.Dialog.ModalExclusionType;
+
+public class Registro implements ActionListener {
 	
 	
 
-	private JFrame frmSistemaDeResgistro;
+	private JDialog frmRegistro;
 	private JTextField textCurp;
 	private JTextField textNombre;
 	private JTextField textTutorNom;
@@ -112,8 +115,8 @@ public class registro implements ActionListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					registro window = new registro();
-					window.frmSistemaDeResgistro.setVisible(true);
+					Registro window = new Registro();
+					window.frmRegistro.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -124,7 +127,7 @@ public class registro implements ActionListener {
 	/**
 	 * Create the application.
 	 */
-	public registro() {
+	public Registro() {
 		initialize();
 	}
 
@@ -132,16 +135,17 @@ public class registro implements ActionListener {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frmSistemaDeResgistro = new JFrame();
-		frmSistemaDeResgistro.setBackground(Color.WHITE);
-		frmSistemaDeResgistro.setResizable(false);
-		frmSistemaDeResgistro.setTitle("Sistema de resgistro y administraci\u00F3n escolar");
-		frmSistemaDeResgistro.getContentPane().setBackground(Color.WHITE);
-		frmSistemaDeResgistro.setIconImage(Toolkit.getDefaultToolkit().getImage(registro.class.getResource("/com/sun/javafx/scene/control/skin/modena/HTMLEditor-Underline@2x.png")));
-		frmSistemaDeResgistro.setBounds(100, 100, 1092, 644);
-		frmSistemaDeResgistro.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		JLabel lblRegistro = new JLabel("Registro de estudiantes y personal");
+		frmRegistro = new JDialog((JDialog)null,null, true);
+		frmRegistro.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);;
+		frmRegistro.setBackground(Color.WHITE);
+		frmRegistro.setResizable(false);
+		frmRegistro.setTitle("Sistema de resgistro y administraci\u00F3n escolar");
+		frmRegistro.getContentPane().setBackground(Color.WHITE);
+		frmRegistro.setIconImage(Toolkit.getDefaultToolkit().getImage(Registro.class.getResource("/com/sun/javafx/scene/control/skin/modena/HTMLEditor-Underline@2x.png")));
+		frmRegistro.setBounds(100, 100, 1092, 644);
+		frmRegistro.setLocationRelativeTo(null);
+
+		JLabel lblRegistro = new JLabel("Registro de datos para estudiantes y personal");
 		lblRegistro.setFont(new Font("Arial", Font.BOLD, 26));
 		lblRegistro.setHorizontalAlignment(SwingConstants.CENTER);
 		
@@ -168,8 +172,8 @@ public class registro implements ActionListener {
 		
 		JButton btnGuardar = new JButton("Guardar");
 		btnGuardar.setVerticalTextPosition(SwingConstants.BOTTOM);		
-		btnGuardar.setForeground(new Color(30, 144, 255));
-		btnGuardar.setBackground(Color.WHITE);
+		btnGuardar.setForeground(Color.WHITE);
+		btnGuardar.setBackground(SystemColor.textHighlight);
 		btnGuardar.setFont(new Font("Arial", Font.BOLD, 15));
 		btnGuardar.setActionCommand(ACT_GUARDAR);
 		btnGuardar.addActionListener(this);
@@ -178,8 +182,8 @@ public class registro implements ActionListener {
 		// Boton para salir de la ventana
 		JButton btnCancelar = new JButton("Cancelar");		
 		btnCancelar.setVerticalTextPosition(SwingConstants.BOTTOM);
-		btnCancelar.setForeground(new Color(30, 144, 255));
-		btnCancelar.setBackground(Color.WHITE);
+		btnCancelar.setForeground(Color.WHITE);
+		btnCancelar.setBackground(SystemColor.textHighlight);
 		btnCancelar.setFont(new Font("Arial", Font.BOLD, 15));
 		btnCancelar.setActionCommand(ACT_SALIR);
 		btnCancelar.addActionListener(this);
@@ -226,7 +230,7 @@ public class registro implements ActionListener {
 			        if( textEdad.getText().length()>=8 ) evt.consume();
 			        if(( car<'0' || car>'9' )) evt.consume();
 				} catch (Exception e2) {
-					JOptionPane.showMessageDialog(frmSistemaDeResgistro, "El campo solo permite números.", "Aviso", JOptionPane.PLAIN_MESSAGE);
+					JOptionPane.showMessageDialog(frmRegistro, "El campo solo permite números.", "Aviso", JOptionPane.PLAIN_MESSAGE);
 				}
 			}
 		});
@@ -416,7 +420,7 @@ public class registro implements ActionListener {
 		labelGrado = new JLabel("Grado y grupo");
 		labelGrado.setForeground(SystemColor.textHighlight);
 		labelGrado.setFont(new Font("Arial", Font.BOLD, 14));
-		GroupLayout groupLayout = new GroupLayout(frmSistemaDeResgistro.getContentPane());
+		GroupLayout groupLayout = new GroupLayout(frmRegistro.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
@@ -507,7 +511,7 @@ public class registro implements ActionListener {
 						.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE))
 					.addGap(41))
 		);
-		frmSistemaDeResgistro.getContentPane().setLayout(groupLayout);
+		frmRegistro.getContentPane().setLayout(groupLayout);
 	}
 	
 	
@@ -515,10 +519,11 @@ public class registro implements ActionListener {
 	public void actionPerformed(ActionEvent e) {		
 		if(e.getActionCommand().equals(ACT_SALIR)){
 			
-			JOptionPane.showMessageDialog(null, comboGrado.getSelectedIndex(), "Yay, java", JOptionPane.PLAIN_MESSAGE);
+		//	JOptionPane.showMessageDialog(null, comboGrado.getSelectedIndex(), "Yay, java", JOptionPane.PLAIN_MESSAGE);
 			
-			frmSistemaDeResgistro.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);;
-			frmSistemaDeResgistro.dispose();
+			frmRegistro.setVisible(false);
+			
+			frmRegistro.dispose();
 		}else if(e.getActionCommand().equals(ACT_PERSONAL)){
 			panelAlumno.setVisible(false);
 			comboGrado.setVisible(false);
@@ -664,9 +669,15 @@ public class registro implements ActionListener {
 			
 			
 			if(!bandera){
-				JOptionPane.showMessageDialog(frmSistemaDeResgistro, mensaje, "Aviso", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(frmRegistro, mensaje, "Aviso", JOptionPane.PLAIN_MESSAGE);
 			
 			}
 		}
+	}
+	
+	public static void run() {
+		Registro window = new Registro();
+		window.frmRegistro.setVisible(true);
+		
 	}
 }

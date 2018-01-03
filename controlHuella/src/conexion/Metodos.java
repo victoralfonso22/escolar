@@ -9,7 +9,7 @@ import java.util.List;
 import utilerias.*;
 import javax.swing.JComboBox;
 
-import classes.registro;
+import classes.Registro;
 public class Metodos {
    /*private final String tabla = "tareas";
    public void guardar(Connection conexion, Tarea tarea) throws SQLException{
