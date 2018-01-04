@@ -104,6 +104,7 @@ public class RegistroHuella implements ActionListener {
 	JRadioButton rdbtnPersonal;
 	JRadioButton rdbtnAlumno;
 	JLabel lblDatosDelPadre;
+	ImageIcon imagen1;
 	
 	/**
 	 * Launch the application.
@@ -132,6 +133,9 @@ public class RegistroHuella implements ActionListener {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize(Reader reader, boolean bStreaming) {
+		
+		imagen1 = new ImageIcon(getClass().getResource("/imagenes/huella-dactilar.jpg"));
+		
 		m_reader = reader;
 		m_bStreaming = bStreaming;
 		
@@ -170,10 +174,10 @@ public class RegistroHuella implements ActionListener {
 		JButton btnCapturaHuella = new JButton("");
 		btnCapturaHuella.setToolTipText("Capturar huellas dactilares");
 		btnCapturaHuella.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnCapturaHuella.setIcon(new ImageIcon("C:\\Users\\victo\\Downloads\\huella-dactilar_318-137859.jpg"));
 		btnCapturaHuella.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 14));
 		btnCapturaHuella.setActionCommand(ACT_CAPTURA);
 		btnCapturaHuella.addActionListener(this);
+		btnCapturaHuella.setIcon(imagen1);
 		
 		// radioButtons
 		
