@@ -78,6 +78,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import java.awt.Dialog.ModalExclusionType;
+import javax.swing.ImageIcon;
+import java.awt.Cursor;
 
 public class RegistroHuella implements ActionListener {
 	
@@ -87,13 +89,12 @@ public class RegistroHuella implements ActionListener {
 	private JPanel panelAlumno;
 	private CaptureThread m_capture;
 	private Reader        m_reader;
-	private ImagePanel    m_image;
 	private boolean       m_bStreaming;
 	
 	private static final String ACT_SALIR = "exit";
 	private static final String ACT_PERSONAL = "personal";
 	private static final String ACT_ALUMNO = "alumno";
-	private static final String ACT_GUARDAR = "guardar";
+	private static final String ACT_CAPTURA = "guardar";
 	
 	private JComboBox comboGrado;
 	private JLabel labelGrado;
@@ -103,7 +104,6 @@ public class RegistroHuella implements ActionListener {
 	JRadioButton rdbtnPersonal;
 	JRadioButton rdbtnAlumno;
 	JLabel lblDatosDelPadre;
-	JPanel panel_Ind_Izq;
 	
 	/**
 	 * Launch the application.
@@ -156,23 +156,24 @@ public class RegistroHuella implements ActionListener {
 		labelTipo.setForeground(SystemColor.textHighlight);
 		labelTipo.setFont(new Font("Arial", Font.BOLD, 14));
 		
-		JButton btnGuardar = new JButton("Guardar");
-		btnGuardar.setVerticalTextPosition(SwingConstants.BOTTOM);		
-		btnGuardar.setForeground(Color.WHITE);
-		btnGuardar.setBackground(SystemColor.textHighlight);
-		btnGuardar.setFont(new Font("Arial", Font.BOLD, 15));
-		btnGuardar.setActionCommand(ACT_GUARDAR);
-		btnGuardar.addActionListener(this);
-		
 		
 		// Boton para salir de la ventana
-		JButton btnCancelar = new JButton("Cancelar");		
+		JButton btnCancelar = new JButton("Regresar");		
+		btnCancelar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnCancelar.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnCancelar.setForeground(Color.WHITE);
 		btnCancelar.setBackground(SystemColor.textHighlight);
 		btnCancelar.setFont(new Font("Arial", Font.BOLD, 15));
 		btnCancelar.setActionCommand(ACT_SALIR);
 		btnCancelar.addActionListener(this);
+		
+		JButton btnCapturaHuella = new JButton("");
+		btnCapturaHuella.setToolTipText("Capturar huellas dactilares");
+		btnCapturaHuella.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnCapturaHuella.setIcon(new ImageIcon("C:\\Users\\victo\\Downloads\\huella-dactilar_318-137859.jpg"));
+		btnCapturaHuella.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 14));
+		btnCapturaHuella.setActionCommand(ACT_CAPTURA);
+		btnCapturaHuella.addActionListener(this);
 		
 		// radioButtons
 		
@@ -246,78 +247,14 @@ public class RegistroHuella implements ActionListener {
 		JComboBox comboBox = new JComboBox();
 		comboBox.setFont(new Font("Arial", Font.PLAIN, 14));
 		comboBox.setBackground(Color.WHITE);
-		
-		JPanel panel = new JPanel();
-		panel.setForeground(SystemColor.textHighlight);
-		panel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBackground(Color.WHITE);
-		
-		JLabel lblDatosDeLa = new JLabel("Datos de la huella");
-		lblDatosDeLa.setHorizontalAlignment(SwingConstants.CENTER);
-		lblDatosDeLa.setFont(new Font("Arial", Font.BOLD, 12));
-		
-		panel_Ind_Izq = new JPanel();
-		panel_Ind_Izq.setBorder(new LineBorder(new Color(255, 0, 0), 2, true));
-		panel_Ind_Izq.setBackground(Color.WHITE);
-		m_image = new ImagePanel();
 		Dimension dm = new Dimension(380, 380);
-		m_image.setPreferredSize(dm);
-		panel_Ind_Izq.add(m_image);
 		
-		JPanel panel_Ind_Der = new JPanel();
-		panel_Ind_Der.setBackground(Color.WHITE);
-		panel_Ind_Der.setBorder(new LineBorder(new Color(255, 0, 0), 2, true));
 		
-		JLabel lblIndiceIzquierdo = new JLabel("\u00CDndice izquierdo");
-		lblIndiceIzquierdo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblIndiceIzquierdo.setForeground(SystemColor.textHighlight);
-		lblIndiceIzquierdo.setFont(new Font("Arial", Font.BOLD, 14));
-		
-		JLabel lblndiceDerecho = new JLabel("\u00CDndice derecho");
-		lblndiceDerecho.setHorizontalAlignment(SwingConstants.CENTER);
-		lblndiceDerecho.setForeground(SystemColor.textHighlight);
-		lblndiceDerecho.setFont(new Font("Arial", Font.BOLD, 14));
-		GroupLayout gl_panel = new GroupLayout(panel);
-		gl_panel.setHorizontalGroup(
-			gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(lblDatosDeLa, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
-					.addContainerGap())
-				.addGroup(gl_panel.createSequentialGroup()
-					.addGap(108)
-					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lblIndiceIzquierdo, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(panel_Ind_Izq, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
-					.addGap(93)
-					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel_Ind_Der, GroupLayout.PREFERRED_SIZE, 177, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblndiceDerecho, GroupLayout.PREFERRED_SIZE, 177, GroupLayout.PREFERRED_SIZE))
-					.addGap(85))
-		);
-		gl_panel.setVerticalGroup(
-			gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel.createSequentialGroup()
-					.addComponent(lblDatosDeLa, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
-					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblIndiceIzquierdo, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblndiceDerecho, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel_Ind_Izq, GroupLayout.PREFERRED_SIZE, 170, GroupLayout.PREFERRED_SIZE)
-						.addComponent(panel_Ind_Der, GroupLayout.PREFERRED_SIZE, 170, GroupLayout.PREFERRED_SIZE))
-					.addGap(31))
-		);
-		panel.setLayout(gl_panel);
 		GroupLayout groupLayout = new GroupLayout(frmRegistroHuella.getContentPane());
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
+			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(53)
-							.addComponent(panelAlumno, GroupLayout.PREFERRED_SIZE, 364, GroupLayout.PREFERRED_SIZE))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(328)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
@@ -325,13 +262,11 @@ public class RegistroHuella implements ActionListener {
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(label, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
 									.addGap(18)
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(panel, GroupLayout.PREFERRED_SIZE, 644, GroupLayout.PREFERRED_SIZE)
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-											.addGroup(groupLayout.createSequentialGroup()
-												.addPreferredGap(ComponentPlacement.RELATED)
-												.addComponent(comboGrado, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-											.addComponent(comboBox, 0, 299, Short.MAX_VALUE))))))
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addPreferredGap(ComponentPlacement.RELATED)
+											.addComponent(comboGrado, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+										.addComponent(comboBox, 0, 299, Short.MAX_VALUE)))))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(413)
 							.addComponent(labelTipo, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
@@ -339,14 +274,20 @@ public class RegistroHuella implements ActionListener {
 							.addComponent(rdbtnPersonal)
 							.addGap(48)
 							.addComponent(rdbtnAlumno))
-						.addComponent(lblRegistro, GroupLayout.PREFERRED_SIZE, 1137, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(294, Short.MAX_VALUE))
-				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-					.addContainerGap(388, Short.MAX_VALUE)
-					.addComponent(btnGuardar, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
-					.addGap(123)
-					.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
-					.addGap(366))
+						.addComponent(lblRegistro, GroupLayout.PREFERRED_SIZE, 1137, GroupLayout.PREFERRED_SIZE)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap(53, Short.MAX_VALUE)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+									.addComponent(panelAlumno, GroupLayout.PREFERRED_SIZE, 714, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED))
+								.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+									.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
+									.addGap(195)))
+							.addGap(48)
+							.addComponent(btnCapturaHuella, GroupLayout.PREFERRED_SIZE, 192, GroupLayout.PREFERRED_SIZE)
+							.addGap(99)))
+					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -370,32 +311,14 @@ public class RegistroHuella implements ActionListener {
 						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE))
 					.addGap(26)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(panelAlumno, GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE))
-					.addGap(47)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnGuardar, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE))
-					.addGap(46))
+						.addComponent(btnCapturaHuella, GroupLayout.PREFERRED_SIZE, 317, Short.MAX_VALUE)
+						.addComponent(panelAlumno, GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE))
+					.addGap(18)
+					.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
+					.addGap(34))
 		);
 		frmRegistroHuella.getContentPane().setLayout(groupLayout);
 	}
-	
-	
-	
-	private void StartCaptureThread(){
-		m_capture = new CaptureThread(m_reader, m_bStreaming, Fid.Format.ANSI_381_2004, Reader.ImageProcessing.IMG_PROC_DEFAULT);
-		m_capture.start(this);
-	}
-
-	private void StopCaptureThread(){
-		if(null != m_capture) m_capture.cancel();
-	}
-	
-	private void WaitForCaptureThread(){
-		if(null != m_capture) m_capture.join(1000);
-	}
-	
 	
 	// Acciones de botones
 	public void actionPerformed(ActionEvent e) {		
@@ -418,124 +341,21 @@ public class RegistroHuella implements ActionListener {
 			labelGrado.setVisible(true);
 			labelGrado.setText("Grupo y grado");
 			lblDatosDelPadre.setText("Datos del alumno");
-		}else if (e.getActionCommand().equals(ACT_GUARDAR)){
-			
-			
-		/********************************** VALIDACIONES DE LOS CAMPOS A INSERTAR **********************************************/	
-			boolean bandera = true;
-			String mensaje = "No debe dejar ningun campo vacio\n";	
-			
-			// validacion de los radiobutons
-			if(!rdbtnAlumno.isSelected() && !rdbtnPersonal.isSelected()  ){
-				rdbtnAlumno.setBackground(Color.RED);
-				rdbtnPersonal.setBackground(Color.RED);			
-				bandera = false;
-				mensaje = mensaje+" Tipo de registro\n";
-			}else{
-				rdbtnAlumno.setBackground(Color.WHITE);
-				rdbtnPersonal.setBackground(Color.WHITE);
+		}else if(e.getActionCommand().equals(ACT_CAPTURA)){
+			if(null == m_reader){
+				MessageBox.Warning("No hay lector de huellas conectado");
 			}
-			
-			
-			/************************** VALIDACIONES CUANDO ES TIPO ALUMNO *****************************************/
-				
-				if(comboGrado.getSelectedItem().equals("Selecciona")){
-					comboGrado.setBorder(new LineBorder(Color.RED));
-					
-					bandera = false;
-					mensaje = mensaje+" Grado \n";
-					}else{
-						comboGrado.setBorder(new LineBorder(Color.decode("#7A8A99")));
-					}
-			
-			
-			if(!bandera){
-				JOptionPane.showMessageDialog(frmRegistroHuella, mensaje, "Aviso", JOptionPane.PLAIN_MESSAGE);
-			
+			else{
+				Captura.Run(m_reader, false);
 			}
-		}else if(e.getActionCommand().equals(CaptureThread.ACT_CAPTURE)){
-			//event from capture thread
-			CaptureThread.CaptureEvent evt = (CaptureThread.CaptureEvent)e;
-			boolean bCanceled = false;
-			MessageBox.Warning("Entre");
-			if(null != evt.capture_result){
-				if(null != evt.capture_result.image && Reader.CaptureQuality.GOOD == evt.capture_result.quality){
-					//display image
-					m_image.showImage(evt.capture_result.image);
-				}
-				else if(Reader.CaptureQuality.CANCELED == evt.capture_result.quality){
-					//capture or streaming was canceled, just quit
-					bCanceled = true;
-				}
-				else{
-					//bad quality
-					MessageBox.BadQuality(evt.capture_result.quality);
-				}
-			}
-			else if(null != evt.exception){
-				//exception during capture
-				MessageBox.DpError("Capture",  evt.exception);
-				bCanceled = true;
-			}
-			else if(null != evt.reader_status){
-				MessageBox.BadStatus(evt.reader_status);
-				bCanceled = true;
-			}
-			
-			if(!bCanceled){
-				if(!m_bStreaming){
-					//restart capture thread
-					WaitForCaptureThread();
-					StartCaptureThread();
-				}
-			}			
 		}
 	}
 	
-	
-	
-	private void modal(){
-		//open reader
-		try{
-			m_reader.Open(Reader.Priority.COOPERATIVE);
-		}
-		catch(UareUException e){ MessageBox.DpError("Reader.Open()", e); }
-		
-		boolean bOk = true;
-		if(m_bStreaming){
-			//check if streaming supported
-			Reader.Capabilities rc = m_reader.GetCapabilities();
-			if(!rc.can_stream){
-				MessageBox.Warning("El lector de huellas no soporta streaming");
-				bOk = false;
-			}
-		}
-		
-		if(bOk){
-			//start capture thread
-			MessageBox.Warning("Entre modal");
-			StartCaptureThread();
-
-			//cancel capture
-			StopCaptureThread();
-			
-			//wait for capture thread to finish
-			WaitForCaptureThread();
-		}
-		
-		//close reader
-		try{
-			m_reader.Close();
-		}
-		catch(UareUException e){ MessageBox.DpError("Reader.Close()", e); }
-	}
 	
 	
 	
 	public static void run(Reader reader, boolean bStreaming) {
 		RegistroHuella window = new RegistroHuella(reader, bStreaming);
 		window.frmRegistroHuella.setVisible(true);
-		window.modal();
-		
 	}
 }
