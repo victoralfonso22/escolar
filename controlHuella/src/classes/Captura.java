@@ -13,6 +13,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.digitalpersona.uareu.*;
@@ -38,22 +39,48 @@ public class Captura
 {
 	private static final long serialVersionUID = 2;
 	private static final String ACT_BACK = "back";
+	private static final String ACT_IMEQ = "izquierda_menique";
+	private static final String ACT_IANU = "izquierda_anular";
+	private static final String ACT_IMED = "izquierda_medio";
+	private static final String ACT_IIND = "izquierda_indice";
+	private static final String ACT_IPUL = "izquierda_pulgar";
 	
+	private static final String ACT_DMEQ = "derecha_menique";
+	private static final String ACT_DANU = "derecha_anular";
+	private static final String ACT_DMED = "derecha_medio";
+	private static final String ACT_DIND = "derecha_indice";
+	private static final String ACT_DPUL = "derecha_pulgar";
 	
 	private JPanel panelAlumno;
 	private JDialog       m_dlgParent;
 	private CaptureThread m_capture;
 	private Reader        m_reader;
-	ImagePanel    m_image;
+	private ImagePanel    m_image;
 	private boolean       m_bStreaming;
 	private JLabel txtDedo;
+	
+	private Fmd[]   m_fmds;
+	
+	JRadioButton radioIMenique;
+	JRadioButton radioIAnular;
+	JRadioButton radioIMedio;
+	JRadioButton radioIIndice;
+	JRadioButton radioIPulgar;
+	
+	JRadioButton radioDMenique;
+	JRadioButton radioDAnular;
+	JRadioButton radioDMedio;
+	JRadioButton radioDIndice;
+	JRadioButton radioDPulgar;
+	
 	ButtonGroup radios;
 	
-	ImageIcon imagen1; //declaro 3 variables del tipo iamgen
+	ImageIcon imagen1, blanco; //declaro 3 variables del tipo iamgen
     
 	private Captura(Reader reader, boolean bStreaming){
 		
 		imagen1 = new ImageIcon(getClass().getResource("/imagenes/manos-blancas-colorea.jpg"));
+		blanco = new ImageIcon(getClass().getResource("/imagenes/blanco.png"));
 		
 		setBorder(new LineBorder(Color.BLACK));
 		setBackground(Color.WHITE);
@@ -91,41 +118,61 @@ public class Captura
 								btnGuardar.setBackground(SystemColor.textHighlight);
 								btnGuardar.setActionCommand("back");
 								
-								txtDedo = new JLabel("Mano derecha - dedo \u00EDndice");
-								txtDedo.setForeground(new Color(30, 144, 255));
+								txtDedo = new JLabel();
+								txtDedo.setForeground(Color.RED);
 								txtDedo.setHorizontalAlignment(SwingConstants.CENTER);
-								txtDedo.setText("Mano derecha - dedo \u00EDndice");
+								//txtDedo.setText("Mano derecha - dedo \u00EDndice");
 								txtDedo.setFont(new Font("Arial", Font.BOLD, 14));
 								
-								JRadioButton radioIMenique = new JRadioButton("");
+								radioIMenique = new JRadioButton("");
 								radioIMenique.setBackground(Color.WHITE);
+								radioIMenique.setActionCommand(ACT_IMEQ);
+								radioIMenique.addActionListener(this);
 								
-								JRadioButton radioIAnular = new JRadioButton("");
+								radioIAnular = new JRadioButton("");
 								radioIAnular.setBackground(Color.WHITE);
+								radioIAnular.setActionCommand(ACT_IANU);
+								radioIAnular.addActionListener(this);
 								
-								JRadioButton radioIMedio = new JRadioButton("");
+								radioIMedio = new JRadioButton("");
 								radioIMedio.setBackground(Color.WHITE);
+								radioIMedio.setActionCommand(ACT_IMED);
+								radioIMedio.addActionListener(this);
 								
-								JRadioButton radioIIndice = new JRadioButton("");
+								radioIIndice = new JRadioButton("");
 								radioIIndice.setBackground(Color.WHITE);
+								radioIIndice.setActionCommand(ACT_IIND);
+								radioIIndice.addActionListener(this);
 								
-								JRadioButton radioIPulgar = new JRadioButton("");
+								radioIPulgar = new JRadioButton("");
 								radioIPulgar.setBackground(Color.WHITE);
+								radioIPulgar.setActionCommand(ACT_IPUL);
+								radioIPulgar.addActionListener(this);
 								
-								JRadioButton radioDPulgar = new JRadioButton("");
+								radioDPulgar = new JRadioButton("");
 								radioDPulgar.setBackground(Color.WHITE);
+								radioDPulgar.setActionCommand(ACT_DPUL);
+								radioDPulgar.addActionListener(this);
 								
-								JRadioButton radioDIndice = new JRadioButton("");
+								radioDIndice = new JRadioButton("");
 								radioDIndice.setBackground(Color.WHITE);
+								radioDIndice.setActionCommand(ACT_DIND);
+								radioDIndice.addActionListener(this);
 								
-								JRadioButton radioDMedio = new JRadioButton("");
+								radioDMedio = new JRadioButton("");
 								radioDMedio.setBackground(Color.WHITE);
+								radioDMedio.setActionCommand(ACT_DMED);
+								radioDMedio.addActionListener(this);
 								
-								JRadioButton radioDAnular = new JRadioButton("");
+								radioDAnular = new JRadioButton("");
 								radioDAnular.setBackground(Color.WHITE);
+								radioDAnular.setActionCommand(ACT_DANU);
+								radioDAnular.addActionListener(this);
 								
-								JRadioButton radioDMenique = new JRadioButton("");
+								radioDMenique = new JRadioButton("");
 								radioDMenique.setBackground(Color.WHITE);
+								radioDMenique.setActionCommand(ACT_DMEQ);
+								radioDMenique.addActionListener(this);
 								
 								radios = new ButtonGroup();
 								radios.add(radioDMenique);
@@ -305,16 +352,74 @@ public class Captura
 			//event from "back" button
 			//cancel capture
 			StopCaptureThread();
-		}
-		else if(e.getActionCommand().equals(CaptureThread.ACT_CAPTURE)){
+		}else if(e.getActionCommand().equals(ACT_IMEQ)) {			
+			txtDedo.setText("Mano izquierda - dedo meñique");
+			m_image.hideImage(blanco);
+			
+			
+		}else if(e.getActionCommand().equals(ACT_IANU)) {
+		
+			txtDedo.setText("Mano izquierda - dedo anular");
+			m_image.hideImage(blanco);
+			
+		}else if(e.getActionCommand().equals(ACT_IMED)) {
+		
+			txtDedo.setText("Mano izquierda - dedo medio");
+			m_image.hideImage(blanco);
+			
+		}else if(e.getActionCommand().equals(ACT_IIND)) {
+		
+			txtDedo.setText("Mano izquierda - dedo índice");
+			m_image.hideImage(blanco);
+			
+		}else if(e.getActionCommand().equals(ACT_IPUL)) {
+		
+			txtDedo.setText("Mano izquierda - dedo pulgar");
+			m_image.hideImage(blanco);
+			
+		}else if(e.getActionCommand().equals(ACT_DMEQ)) {			
+			txtDedo.setText("Mano derecha - dedo meñique");
+			m_image.hideImage(blanco);
+			
+			
+		}else if(e.getActionCommand().equals(ACT_DANU)) {
+		
+			txtDedo.setText("Mano derecha - dedo anular");
+			m_image.hideImage(blanco);
+			
+		}else if(e.getActionCommand().equals(ACT_DMED)) {
+		
+			txtDedo.setText("Mano derecha - dedo medio");
+			m_image.hideImage(blanco);
+			
+		}else if(e.getActionCommand().equals(ACT_DIND)) {
+		
+			txtDedo.setText("Mano derecha - dedo índice");
+			m_image.hideImage(blanco);
+			
+		}else if(e.getActionCommand().equals(ACT_DPUL)) {
+		
+			txtDedo.setText("Mano derecha - dedo pulgar");
+			m_image.hideImage(blanco);
+			
+		}else if(e.getActionCommand().equals(CaptureThread.ACT_CAPTURE)){
+
+			
 			//event from capture thread
 			CaptureThread.CaptureEvent evt = (CaptureThread.CaptureEvent)e;
 			boolean bCanceled = false;
 			
 			if(null != evt.capture_result){
 				if(null != evt.capture_result.image && Reader.CaptureQuality.GOOD == evt.capture_result.quality){
+					if(!radioDMenique.isSelected() && !radioDAnular.isSelected() && !radioDMedio.isSelected() && !radioDIndice.isSelected() && !radioDPulgar.isSelected()
+							&& !radioIAnular.isSelected() && !radioIMenique.isSelected() && !radioIMedio.isSelected() && !radioIIndice.isSelected() && !radioIPulgar.isSelected()){
+						
+						
+						JOptionPane.showMessageDialog(m_dlgParent, "Debe seleccionar un dedo a capturar", "Aviso", JOptionPane.WARNING_MESSAGE);
+					}else {
 					//display image
 					m_image.showImage(evt.capture_result.image);
+					}
 				}
 				else if(Reader.CaptureQuality.CANCELED == evt.capture_result.quality){
 					//capture or streaming was canceled, just quit
@@ -346,7 +451,9 @@ public class Captura
 				//destroy dialog
 				m_dlgParent.setVisible(false);
 			}
+			
 		}
+		
 	}
 
 	private void doModal(JDialog dlgParent){
@@ -375,7 +482,7 @@ public class Captura
 			m_dlgParent.setContentPane(this);
 			m_dlgParent.pack();
 			m_dlgParent.setLocationRelativeTo(null);
-			m_dlgParent.toFront();
+			//m_dlgParent.toFront();
 			m_dlgParent.setAlwaysOnTop(true);
 			m_dlgParent.setVisible(true);
 			m_dlgParent.dispose();
