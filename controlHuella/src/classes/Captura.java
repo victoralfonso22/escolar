@@ -26,12 +26,17 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 import java.awt.Font;
 import java.awt.Cursor;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.ImageIcon;
 import javax.swing.JRadioButton;
+
+import conexion.Metodos;
 
 public class Captura 
 	extends JPanel
@@ -39,6 +44,7 @@ public class Captura
 {
 	private static final long serialVersionUID = 2;
 	private static final String ACT_BACK = "back";
+	private static final String ACT_GUARDAR = "guardar";
 	private static final String ACT_IMEQ = "izquierda_menique";
 	private static final String ACT_IANU = "izquierda_anular";
 	private static final String ACT_IMED = "izquierda_medio";
@@ -59,8 +65,6 @@ public class Captura
 	private boolean       m_bStreaming;
 	private JLabel txtDedo;
 	
-	private Fmd[]   m_fmds;
-	
 	JRadioButton radioIMenique;
 	JRadioButton radioIAnular;
 	JRadioButton radioIMedio;
@@ -72,6 +76,9 @@ public class Captura
 	JRadioButton radioDMedio;
 	JRadioButton radioDIndice;
 	JRadioButton radioDPulgar;
+	
+	ByteArrayInputStream fingerprintInfo = null;
+	Integer fingerprintSize = 0;
 	
 	ButtonGroup radios;
 	
@@ -116,7 +123,8 @@ public class Captura
 								btnGuardar.setForeground(Color.WHITE);
 								btnGuardar.setFont(new Font("Arial", Font.BOLD, 15));
 								btnGuardar.setBackground(SystemColor.textHighlight);
-								btnGuardar.setActionCommand("back");
+								btnGuardar.setActionCommand(ACT_GUARDAR);
+								btnGuardar.addActionListener(this);
 								
 								txtDedo = new JLabel();
 								txtDedo.setForeground(Color.RED);
@@ -352,6 +360,16 @@ public class Captura
 			//event from "back" button
 			//cancel capture
 			StopCaptureThread();
+		}else if(e.getActionCommand().equals(ACT_GUARDAR)){
+			if(fingerprintInfo!=null){
+				Metodos met = new Metodos();
+				met.guardarFDM(fingerprintInfo,fingerprintSize,m_dlgParent);
+			//	byte[] result =	met.regresarFDM(m_dlgParent);
+				JOptionPane.showMessageDialog(m_dlgParent,"Huella guardada!", "Exito", JOptionPane.INFORMATION_MESSAGE);	
+			}else{
+				JOptionPane.showMessageDialog(m_dlgParent,"Necesita introducir una huella", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+			
 		}else if(e.getActionCommand().equals(ACT_IMEQ)) {			
 			txtDedo.setText("Mano izquierda - dedo meñique");
 			m_image.hideImage(blanco);
@@ -403,7 +421,8 @@ public class Captura
 			m_image.hideImage(blanco);
 			
 		}else if(e.getActionCommand().equals(CaptureThread.ACT_CAPTURE)){
-
+			
+			Engine engine = UareUGlobal.GetEngine();
 			
 			//event from capture thread
 			CaptureThread.CaptureEvent evt = (CaptureThread.CaptureEvent)e;
@@ -417,6 +436,18 @@ public class Captura
 						
 						JOptionPane.showMessageDialog(m_dlgParent, "Debe seleccionar un dedo a capturar", "Aviso", JOptionPane.WARNING_MESSAGE);
 					}else {
+					
+						try{
+							Fmd fmdCapturado = engine.CreateFmd(evt.capture_result.image, Fmd.Format.ANSI_378_2004);
+						//	JOptionPane.showMessageDialog(m_dlgParent,fmdCapturado.getData()+" "+fmdCapturado.getData().length, "Aviso", JOptionPane.WARNING_MESSAGE);
+							fingerprintInfo = new ByteArrayInputStream(fmdCapturado.getData());
+							fingerprintSize = fmdCapturado.getData().length;
+							
+						//	Fmd fmdOtro = UareUGlobal.GetImporter().ImportFmd(result, com.digitalpersona.uareu.Fmd.Format.DP_REG_FEATURES, com.digitalpersona.uareu.Fmd.Format.DP_REG_FEATURES);
+						//	JOptionPane.showMessageDialog(m_dlgParent,fmdOtro.getData()+" "+fmdOtro.getData().length, "Aviso", JOptionPane.WARNING_MESSAGE);
+						}
+						catch(UareUException ev){ MessageBox.DpError("Engine.CreateFmd()", ev); }
+						
 					//display image
 					m_image.showImage(evt.capture_result.image);
 					}

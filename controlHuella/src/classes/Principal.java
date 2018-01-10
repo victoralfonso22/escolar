@@ -89,6 +89,7 @@ public class Principal implements ActionListener {
 	private static final String ACT_REGISTRO = "registro";
 	private static final String ACT_REGISTRO_HUELLA = "huella";
 	private static final String ACT_GUARDAR = "guardar";
+	private static final String ACT_ASISTENCIA = "asistencia";
 	String fechaConFormato;
 	
 	ButtonGroup radios;
@@ -141,7 +142,7 @@ public class Principal implements ActionListener {
 		btnAsistencia.setForeground(Color.WHITE);
 		btnAsistencia.setBackground(SystemColor.textHighlight);
 		btnAsistencia.setFont(new Font("Arial", Font.BOLD, 16));
-		btnAsistencia.setActionCommand(ACT_GUARDAR);
+		btnAsistencia.setActionCommand(ACT_ASISTENCIA);
 		btnAsistencia.addActionListener(this);
 		
 		
@@ -229,7 +230,22 @@ public class Principal implements ActionListener {
 				MessageBox.Warning("No hay lector de huellas conectado");
 			} 
 			
-			}
+			}else if(e.getActionCommand().equals(ACT_ASISTENCIA)){
+				try{
+					m_collection.GetReaders();
+				} 
+				catch(UareUException e2) { 
+					MessageBox.DpError("ReaderCollection.GetReaders()", e2);
+				}
+				try {
+					m_reader = m_collection.get(0);
+					//Capabilities.Show(m_reader);
+					Asistencia.Run(m_reader, false);
+				}catch (ArrayIndexOutOfBoundsException ee) {
+					MessageBox.Warning("No hay lector de huellas conectado");
+				} 
+				
+				}
 			
 	}
 	}

@@ -27,6 +27,7 @@ public class ImagePanel
 		repaint();
 	} 
 	
+
 	public void paint(Graphics g) {
 		g.drawImage(m_image, 0, 0, null);
 	}

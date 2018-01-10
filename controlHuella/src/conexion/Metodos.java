@@ -1,14 +1,20 @@
 package conexion;
 
+import java.awt.Component;
+import java.io.ByteArrayInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import utilerias.*;
-import javax.swing.JComboBox;
 
+import utilerias.*;
+
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+
+import clases.Grados;
 import classes.Registro;
 public class Metodos {
    /*private final String tabla = "tareas";
@@ -86,4 +92,78 @@ public void llenaCombo(Connection conexion, int id_escuela) throws SQLException{
 	}
 } 
 	*/
+	
+	public void guardarFDM(ByteArrayInputStream bArr, int longi, Component comp) {
+		   
+
+		   
+		  Connection connection=null;
+		  Conexion miConexion=new Conexion();
+		  PreparedStatement statement=null;
+		  ResultSet result=null;
+		   
+		  Grados grados;
+		   
+		  connection=miConexion.getConnection();
+		   
+		  String consulta="insert into users_in_fmd (FMD) values (?);";
+		   
+		  try {
+		   if (connection!=null) {
+		    statement=connection.prepareStatement(consulta);
+		    statement.setBinaryStream(1, bArr,longi);
+		    statement.executeUpdate();
+
+		   }
+		  } catch (SQLException e) {
+			  JOptionPane.showMessageDialog(comp, "Error en la consulta de grados: "+e.getMessage(), "Aviso", JOptionPane.ERROR_MESSAGE);			  
+		  }finally{
+		   try {
+		    connection.close();
+		    miConexion.desconectar();
+		   } catch (SQLException e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		   }
+		  }
+
+		 }
+	
+	public byte[] regresarFDM(Component comp) {
+		   
+
+		   
+		  Connection connection=null;
+		  Conexion miConexion=new Conexion();
+		  PreparedStatement statement=null;
+		  ResultSet result=null;
+		   
+		  Grados grados;
+		   
+		  connection=miConexion.getConnection();
+		   
+		  String consulta="select FMD from users_in_fmd where UsersInFmd = 1;";
+		   
+		  try {
+		   if (connection!=null) {
+		    statement=connection.prepareStatement(consulta);		    
+		    result = statement.executeQuery();
+		    if(result.next()){
+		    return result.getBytes("FMD");
+		    }
+		   }
+		  } catch (SQLException e) {
+			  JOptionPane.showMessageDialog(comp, "Error en la consulta de grados: "+e.getMessage(), "Aviso", JOptionPane.ERROR_MESSAGE);			  
+		  }finally{
+		   try {
+		    connection.close();
+		    miConexion.desconectar();
+		   } catch (SQLException e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		   }
+		  }
+		  return null;
+		 }
+	
 }
