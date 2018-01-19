@@ -16,6 +16,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import clases.Alumno;
+import clases.Personal;
+
 import com.digitalpersona.uareu.*;
 
 import javax.swing.SwingConstants;
@@ -77,17 +80,23 @@ public class Captura
 	JRadioButton radioDIndice;
 	JRadioButton radioDPulgar;
 	
+	JLabel lblTipo;
+	JLabel labelNombre;
+	
 	ByteArrayInputStream fingerprintInfo = null;
 	Integer fingerprintSize = 0;
 	
 	ButtonGroup radios;
 	
-	ImageIcon imagen1, blanco; //declaro 3 variables del tipo iamgen
+	int tipo_dedo, id_usuario, tipo_usario;
+	
+	ImageIcon imagen1, blanco,icono; //declaro 3 variables del tipo iamgen
     
-	private Captura(Reader reader, boolean bStreaming){
+	private Captura(Reader reader, boolean bStreaming, Alumno alumno, Personal personal){
 		
 		imagen1 = new ImageIcon(getClass().getResource("/imagenes/manos-blancas-colorea.jpg"));
 		blanco = new ImageIcon(getClass().getResource("/imagenes/blanco.png"));
+		
 		
 		setBorder(new LineBorder(Color.BLACK));
 		setBackground(Color.WHITE);
@@ -100,14 +109,14 @@ public class Captura
 		panelAlumno = new JPanel();
 		panelAlumno.setBackground(Color.WHITE);
 		panelAlumno.setForeground(SystemColor.textHighlight);
-		panelAlumno.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelAlumno.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));		
 		Dimension dm = new Dimension(200, 200);
 								
 								
 								JButton btnBack = new JButton("Cancelar");
 								btnBack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 								btnBack.setForeground(Color.WHITE);
-								btnBack.setBackground(SystemColor.textHighlight);
+								btnBack.setBackground(new Color(0, 102, 0));
 								btnBack.setFont(new Font("Arial", Font.BOLD, 15));
 								btnBack.setActionCommand(ACT_BACK);
 								btnBack.addActionListener(this);
@@ -122,7 +131,7 @@ public class Captura
 								JButton btnGuardar = new JButton("Guardar");
 								btnGuardar.setForeground(Color.WHITE);
 								btnGuardar.setFont(new Font("Arial", Font.BOLD, 15));
-								btnGuardar.setBackground(SystemColor.textHighlight);
+								btnGuardar.setBackground(new Color(0, 102, 0));
 								btnGuardar.setActionCommand(ACT_GUARDAR);
 								btnGuardar.addActionListener(this);
 								
@@ -195,12 +204,12 @@ public class Captura
 								radios.add(radioIPulgar);
 								
 								JLabel lblManoIzquierda = new JLabel("Mano izquierda");
-								lblManoIzquierda.setForeground(SystemColor.textHighlight);
+								lblManoIzquierda.setForeground(new Color(0, 102, 0));
 								lblManoIzquierda.setHorizontalAlignment(SwingConstants.CENTER);
 								lblManoIzquierda.setFont(new Font("Arial", Font.BOLD, 12));
 								
 								JLabel lblManoDerecha = new JLabel("Mano derecha");
-								lblManoDerecha.setForeground(SystemColor.textHighlight);
+								lblManoDerecha.setForeground(new Color(0, 102, 0));
 								lblManoDerecha.setHorizontalAlignment(SwingConstants.CENTER);
 								lblManoDerecha.setFont(new Font("Arial", Font.BOLD, 12));
 								
@@ -209,11 +218,31 @@ public class Captura
 								
 								JLabel lblNewLabel_1 = new JLabel("");
 								lblNewLabel_1.setIcon(new ImageIcon(Captura.class.getResource("/imagenes/mano-derecha.png")));
+								
+								lblTipo = new JLabel("");
+								lblTipo.setForeground(new Color(0, 102, 0));
+								lblTipo.setFont(new Font("Arial", Font.PLAIN, 22));
+								
+								labelNombre = new JLabel("");
+								labelNombre.setForeground(Color.BLACK);
+								labelNombre.setFont(new Font("Arial", Font.PLAIN, 22));
+								
+								if(personal == null){
+									lblTipo.setText("Alumno :");
+									labelNombre.setText(alumno.getNombre_completo());
+									id_usuario = alumno.getId();
+									tipo_usario = 1;
+								}else if(alumno == null){
+									lblTipo.setText("Personal :");
+									labelNombre.setText(personal.getNombre_completo());
+									id_usuario = personal.getId();
+									tipo_usario = 2;
+								}
 																
 								
 								GroupLayout groupLayout = new GroupLayout(this);
 								groupLayout.setHorizontalGroup(
-									groupLayout.createParallelGroup(Alignment.TRAILING)
+									groupLayout.createParallelGroup(Alignment.LEADING)
 										.addGroup(groupLayout.createSequentialGroup()
 											.addGap(218)
 											.addComponent(btnBack, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
@@ -232,28 +261,27 @@ public class Captura
 												.addGroup(groupLayout.createSequentialGroup()
 													.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 														.addGroup(groupLayout.createSequentialGroup()
-															.addComponent(radioIMenique)
-															.addPreferredGap(ComponentPlacement.UNRELATED)
-															.addComponent(lblNewLabel))
-														.addGroup(groupLayout.createSequentialGroup()
 															.addGap(52)
 															.addComponent(radioIAnular, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
 															.addGap(34)
 															.addComponent(radioIMedio, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
 															.addGap(39)
-															.addComponent(radioIIndice, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)))
+															.addComponent(radioIIndice, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
+														.addGroup(groupLayout.createSequentialGroup()
+															.addComponent(radioIMenique)
+															.addPreferredGap(ComponentPlacement.UNRELATED)
+															.addComponent(lblNewLabel)))
 													.addPreferredGap(ComponentPlacement.RELATED)
-													.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-														.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+													.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+														.addGroup(groupLayout.createSequentialGroup()
 															.addComponent(radioIPulgar, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
-															.addPreferredGap(ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+															.addPreferredGap(ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
 															.addComponent(radioDPulgar, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
 															.addPreferredGap(ComponentPlacement.RELATED)
 															.addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 211, GroupLayout.PREFERRED_SIZE)
-															.addGap(6)
-															.addPreferredGap(ComponentPlacement.UNRELATED)
+															.addPreferredGap(ComponentPlacement.RELATED)
 															.addComponent(radioDMenique, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
-														.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+														.addGroup(groupLayout.createSequentialGroup()
 															.addComponent(radioDIndice, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
 															.addGap(39)
 															.addComponent(radioDMedio, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
@@ -265,13 +293,24 @@ public class Captura
 												.addComponent(txtDedo, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 												.addComponent(m_image, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 243, GroupLayout.PREFERRED_SIZE))
 											.addGap(19))
+										.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+											.addContainerGap(168, Short.MAX_VALUE)
+											.addComponent(lblTipo, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
+											.addPreferredGap(ComponentPlacement.RELATED)
+											.addComponent(labelNombre, GroupLayout.PREFERRED_SIZE, 360, GroupLayout.PREFERRED_SIZE)
+											.addGap(253))
 								);
 								groupLayout.setVerticalGroup(
 									groupLayout.createParallelGroup(Alignment.TRAILING)
 										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(28)
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(lblTipo, GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+												.addComponent(labelNombre, GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
+											.addGap(18)
 											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 												.addGroup(groupLayout.createSequentialGroup()
-													.addGap(100)
+													.addGap(41)
 													.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 														.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 															.addGroup(groupLayout.createSequentialGroup()
@@ -293,13 +332,10 @@ public class Captura
 																	.addGroup(groupLayout.createSequentialGroup()
 																		.addComponent(radioDIndice, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
 																		.addPreferredGap(ComponentPlacement.RELATED)))
-																.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-																	.addGroup(groupLayout.createSequentialGroup()
-																		.addComponent(lblNewLabel)
-																		.addGap(20))
-																	.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-																		.addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 226, GroupLayout.PREFERRED_SIZE)
-																		.addGap(21)))
+																.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+																	.addComponent(lblNewLabel)
+																	.addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 226, GroupLayout.PREFERRED_SIZE))
+																.addGap(20)
 																.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 																	.addComponent(lblManoDerecha, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
 																	.addComponent(lblManoIzquierda, GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)))
@@ -316,7 +352,6 @@ public class Captura
 																	.addComponent(radioIPulgar, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)))))
 													.addGap(31))
 												.addGroup(groupLayout.createSequentialGroup()
-													.addGap(45)
 													.addComponent(txtDedo, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
 													.addGap(6)
 													.addComponent(m_image, GroupLayout.PREFERRED_SIZE, 288, GroupLayout.PREFERRED_SIZE)
@@ -363,9 +398,35 @@ public class Captura
 		}else if(e.getActionCommand().equals(ACT_GUARDAR)){
 			if(fingerprintInfo!=null){
 				Metodos met = new Metodos();
-				met.guardarFDM(fingerprintInfo,fingerprintSize,m_dlgParent);
+				
+				if(radioIMenique.isSelected()){
+					tipo_dedo = 1;
+				}else if(radioIAnular.isSelected()){
+					tipo_dedo = 2;
+				}else if(radioIMedio.isSelected()){
+					tipo_dedo = 3;
+				}else if(radioIIndice.isSelected()){
+					tipo_dedo = 4;
+				}else if(radioIPulgar.isSelected()){
+					tipo_dedo = 5;
+				}else if(radioDMenique.isSelected()){
+					tipo_dedo = 6;
+				}else if(radioDAnular.isSelected()){
+					tipo_dedo = 7;
+				}else if(radioDMedio.isSelected()){
+					tipo_dedo = 8;
+				}else if(radioDIndice.isSelected()){
+					tipo_dedo = 9;
+				}else if(radioDPulgar.isSelected()){
+					tipo_dedo = 10;
+				}
+				
+				
+				if(met.guardarFDM(fingerprintInfo,fingerprintSize,m_dlgParent,tipo_dedo,id_usuario,tipo_usario)){
+					JOptionPane.showMessageDialog(m_dlgParent,"Huella guardada!", "Exito", JOptionPane.INFORMATION_MESSAGE);	
+				}
 			//	byte[] result =	met.regresarFDM(m_dlgParent);
-				JOptionPane.showMessageDialog(m_dlgParent,"Huella guardada!", "Exito", JOptionPane.INFORMATION_MESSAGE);	
+					
 			}else{
 				JOptionPane.showMessageDialog(m_dlgParent,"Necesita introducir una huella", "Error", JOptionPane.ERROR_MESSAGE);
 			}
@@ -518,6 +579,7 @@ public class Captura
 			m_dlgParent.setVisible(true);
 			m_dlgParent.dispose();
 			
+			
 			//cancel capture
 			StopCaptureThread();
 			
@@ -532,9 +594,10 @@ public class Captura
 		catch(UareUException e){ MessageBox.DpError("Reader.Close()", e); }
 	}
 	
-	public static void Run(Reader reader, boolean bStreaming){
-    	JDialog dlg = new JDialog((JDialog)null, "Captura de huellas dactilares.", true);
-    	Captura capture = new Captura(reader, bStreaming);
+	public static void Run(Reader reader, boolean bStreaming, Image im, Alumno alumno, Personal personal){
+    	JDialog dlg = new JDialog((JDialog)null, "Captura de huellas dactilares.", true);   
+    	dlg.setIconImage(im);
+    	Captura capture = new Captura(reader, bStreaming, alumno, personal);
     	capture.doModal(dlg);
 	}
 }

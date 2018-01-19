@@ -34,10 +34,7 @@ public class GradosDAO {
 		    result=statement.executeQuery();
 		     
 		    while(result.next()==true){
-		     grados=new Grados();
-		     grados.setId(result.getInt("id"));
-		     grados.setGrado(result.getString("grado"));
-		         
+		     grados=new Grados(result.getInt("id"),result.getString("grado"));	     
 		           
 		     estudiantesList.add(grados);
 		    }  

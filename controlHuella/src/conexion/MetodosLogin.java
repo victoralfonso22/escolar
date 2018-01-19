@@ -12,11 +12,12 @@ import java.util.List;
 import utilerias.*;
 
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import clases.Grados;
-import classes.RegistroAlumno;
-public class Metodos {
+import clases.Usuarios;
+
+public class MetodosLogin {
    /*private final String tabla = "tareas";
    public void guardar(Connection conexion, Tarea tarea) throws SQLException{
       try{
@@ -93,34 +94,30 @@ public void llenaCombo(Connection conexion, int id_escuela) throws SQLException{
 } 
 	*/
 	
-	public boolean guardarFDM(ByteArrayInputStream bArr, int longi, Component comp,int tipo_dedo, int id_usuario, int tipo_usuario) {
+	/*public void guardarFDM(ByteArrayInputStream bArr, int longi, Component comp) {
 		   
-		boolean guardo = false;
+
 		   
 		  Connection connection=null;
-		  Conexion miConexion=new Conexion();
+		  ConexionLogin miConexion=new ConexionLogin();
 		  PreparedStatement statement=null;
 		  ResultSet result=null;
 		   
-		  Grados grados;
+		  Usuarios usuarios;
 		   
 		  connection=miConexion.getConnection();
 		   
-		  //String consulta="insert into users_in_fmd (FMD) values (?);";
-		  String consulta="call insertarHuella(?,?,?,?);";
+		  String consulta="insert into users_in_fmd (FMD) values (?);";
 		   
 		  try {
 		   if (connection!=null) {
 		    statement=connection.prepareStatement(consulta);
-		    statement.setInt(1, id_usuario);
-		    statement.setInt(2, tipo_usuario);
-		    statement.setInt(3, tipo_dedo);
-		    statement.setBinaryStream(4, bArr,longi);
-		    statement.executeUpdate();		    
-		    guardo = true;
+		    statement.setBinaryStream(1, bArr,longi);
+		    statement.executeUpdate();
+
 		   }
 		  } catch (SQLException e) {
-			  JOptionPane.showMessageDialog(comp, "Error en la consulta: "+e.getMessage(), "Aviso", JOptionPane.ERROR_MESSAGE);			  
+			  JOptionPane.showMessageDialog(comp, "Error en la consulta de grados: "+e.getMessage(), "Aviso", JOptionPane.ERROR_MESSAGE);			  
 		  }finally{
 		   try {
 		    connection.close();
@@ -130,30 +127,41 @@ public void llenaCombo(Connection conexion, int id_escuela) throws SQLException{
 		    e.printStackTrace();
 		   }
 		  }
-		  return guardo;
-		 }
+
+		 }*/
 	
-	public byte[] regresarFDM(Component comp) {
+	public boolean regresarUsuario(String usuario, String pass, JFrame comp) {
 		   
 
 		   
 		  Connection connection=null;
-		  Conexion miConexion=new Conexion();
+		  ConexionLogin miConexion=new ConexionLogin();
 		  PreparedStatement statement=null;
 		  ResultSet result=null;
 		   
-		  Grados grados;
+		  //Usuarios usuarios;
 		   
 		  connection=miConexion.getConnection();
 		   
-		  String consulta="select FMD from users_in_fmd where UsersInFmd = 1;";
+		  String consulta="select count(id) conta from usuarios where usuario = ? and pass = MD5(?) and estatus = 1;";		  
 		   
 		  try {
 		   if (connection!=null) {
-		    statement=connection.prepareStatement(consulta);		    
+		    statement=connection.prepareStatement(consulta);
+		    statement.setString(1, usuario);
+		    statement.setString(2, pass);
+		    //System.out.println(statement.);
 		    result = statement.executeQuery();
+		    
 		    if(result.next()){
-		    return result.getBytes("FMD");
+		    	System.out.println("valor "+result.getInt("conta"));
+		    	if(result.getInt("conta") == 1){
+		    		return true;
+		    	}else{
+		    		return false;
+		    	}
+		    	
+		    
 		    }
 		   }
 		  } catch (SQLException e) {
@@ -167,7 +175,7 @@ public void llenaCombo(Connection conexion, int id_escuela) throws SQLException{
 		    e.printStackTrace();
 		   }
 		  }
-		  return null;
+		  return false;
 		 }
 	
 }

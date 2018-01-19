@@ -5,6 +5,11 @@ public class Grados {
 	private int id;
 	private String grado;
 	
+	public Grados (int id, String grado){
+		this.id = id;
+		this.grado= grado;
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -18,4 +23,7 @@ public class Grados {
 		this.grado = grado;
 	}
 	
+	public String toString(){
+		return grado;
+	}
 }

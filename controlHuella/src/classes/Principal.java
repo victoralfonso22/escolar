@@ -35,6 +35,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 import javax.swing.UIManager;
@@ -74,32 +75,37 @@ import java.awt.SystemColor;
 import javax.swing.border.LineBorder;
 import javax.swing.text.NumberFormatter;
 import javax.swing.JFormattedTextField;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
 import javax.swing.JProgressBar;
+
+import java.awt.Cursor;
 
 public class Principal implements ActionListener {
 	
 	private ReaderCollection m_collection;
 	private Reader           m_reader;
-
+	
 	private JFrame frmSistemaDeResgistro;
 	
 	private static final String ACT_SALIR = "exit";
-	private static final String ACT_REGISTRO = "registro";
+	private static final String ACT_REGISTRO_ALUMNO = "registro_alumno";
+	private static final String ACT_REGISTRO_PERSONAL = "registro_personal";
 	private static final String ACT_REGISTRO_HUELLA = "huella";
 	private static final String ACT_GUARDAR = "guardar";
 	private static final String ACT_ASISTENCIA = "asistencia";
 	String fechaConFormato;
 	
 	ButtonGroup radios;
+	ImageIcon icono;
 	
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
+
+			public static void run() {
 				try {
 					Principal window = new Principal();
 					window.m_collection = UareUGlobal.GetReaderCollection();
@@ -108,8 +114,7 @@ public class Principal implements ActionListener {
 					e.printStackTrace();
 				}
 			}
-		});
-	}
+	
 
 	/**
 	 * Create the application.
@@ -122,53 +127,61 @@ public class Principal implements ActionListener {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
+		icono = new ImageIcon(getClass().getResource("/imagenes/logo2.png"));
+		
 		frmSistemaDeResgistro = new JFrame();		
 		frmSistemaDeResgistro.setBackground(Color.WHITE);
 		frmSistemaDeResgistro.setResizable(false);
 		frmSistemaDeResgistro.setTitle("Sistema de resgistro y administraci\u00F3n escolar");
 		frmSistemaDeResgistro.getContentPane().setBackground(Color.WHITE);
-		frmSistemaDeResgistro.setIconImage(Toolkit.getDefaultToolkit().getImage(Principal.class.getResource("/com/sun/javafx/scene/control/skin/modena/HTMLEditor-Underline@2x.png")));
-		frmSistemaDeResgistro.setBounds(100, 100, 756, 482);
+		frmSistemaDeResgistro.setIconImage(Toolkit.getDefaultToolkit().getImage(Principal.class.getResource("/imagenes/logo2.png")));
+		frmSistemaDeResgistro.setBounds(100, 100, 763, 482);
 		frmSistemaDeResgistro.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSistemaDeResgistro.setLocationRelativeTo(null);
 		
 		JLabel lblRegistro = new JLabel("Panel principal");
+		lblRegistro.setForeground(new Color(0, 102, 0));
 		lblRegistro.setFont(new Font("Arial", Font.BOLD, 26));
 		lblRegistro.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JButton btnAsistencia = new JButton();
+		btnAsistencia.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnAsistencia.setText("<html><p>Registro de asistencia por huella</p></html>");
 		btnAsistencia.setVerticalTextPosition(SwingConstants.BOTTOM);		
 		btnAsistencia.setForeground(Color.WHITE);
-		btnAsistencia.setBackground(SystemColor.textHighlight);
+		btnAsistencia.setBackground(new Color(0, 102, 0));
 		btnAsistencia.setFont(new Font("Arial", Font.BOLD, 16));
 		btnAsistencia.setActionCommand(ACT_ASISTENCIA);
 		btnAsistencia.addActionListener(this);
 		
 		
 		// Boton para salir de la ventana
-		JButton btnRegistro = new JButton();
-		btnRegistro.setHorizontalTextPosition(SwingConstants.CENTER);
-		btnRegistro.setText("<html><p>Alta de estudiantes y personal</p></html>");
-		btnRegistro.setForeground(Color.WHITE);
-		btnRegistro.setBackground(SystemColor.textHighlight);
-		btnRegistro.setFont(new Font("Arial", Font.BOLD, 16));
-		btnRegistro.setActionCommand(ACT_REGISTRO);
-		btnRegistro.addActionListener(this);
+		JButton btnRegistroAlumnos = new JButton();
+		btnRegistroAlumnos.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnRegistroAlumnos.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnRegistroAlumnos.setText("Alta de estudiantes");
+		btnRegistroAlumnos.setForeground(Color.WHITE);
+		btnRegistroAlumnos.setBackground(new Color(0, 102, 0));
+		btnRegistroAlumnos.setFont(new Font("Arial", Font.BOLD, 16));
+		btnRegistroAlumnos.setActionCommand(ACT_REGISTRO_ALUMNO);
+		btnRegistroAlumnos.addActionListener(this);
 		
 		JButton btnRegistroDeHuella = new JButton("Registro de huella");
+		btnRegistroDeHuella.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnRegistroDeHuella.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnRegistroDeHuella.setForeground(Color.WHITE);
 		btnRegistroDeHuella.setFont(new Font("Arial", Font.BOLD, 16));
-		btnRegistroDeHuella.setBackground(SystemColor.textHighlight);
+		btnRegistroDeHuella.setBackground(new Color(0, 102, 0));
 		btnRegistroDeHuella.setActionCommand(ACT_REGISTRO_HUELLA);
 		btnRegistroDeHuella.addActionListener(this);
 		
 		JButton btnSalir = new JButton("Salir");
+		btnSalir.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSalir.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnSalir.setForeground(Color.WHITE);
 		btnSalir.setFont(new Font("Arial", Font.BOLD, 16));
-		btnSalir.setBackground(SystemColor.textHighlight);
+		btnSalir.setBackground(new Color(0, 102, 0));
 		btnSalir.setActionCommand(ACT_SALIR);
 		btnSalir.addActionListener(this);
 		
@@ -176,7 +189,7 @@ public class Principal implements ActionListener {
 		GroupLayout groupLayout = new GroupLayout(frmSistemaDeResgistro.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addComponent(lblRegistro, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 750, Short.MAX_VALUE)
+				.addComponent(lblRegistro, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 757, Short.MAX_VALUE)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(83)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
@@ -185,8 +198,8 @@ public class Principal implements ActionListener {
 					.addGap(112)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addComponent(btnSalir, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnRegistro, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(85, Short.MAX_VALUE))
+						.addComponent(btnRegistroAlumnos, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(92, Short.MAX_VALUE))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -195,7 +208,7 @@ public class Principal implements ActionListener {
 					.addComponent(lblRegistro)
 					.addGap(51)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-						.addComponent(btnRegistro, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(btnRegistroAlumnos, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addComponent(btnAsistencia, GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE))
 					.addGap(40)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
@@ -212,8 +225,11 @@ public class Principal implements ActionListener {
 		if(e.getActionCommand().equals(ACT_SALIR)){		
 			frmSistemaDeResgistro.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);;
 			frmSistemaDeResgistro.dispose();
-		}else if(e.getActionCommand().equals(ACT_REGISTRO)){		
-			Registro.run();
+		}else if(e.getActionCommand().equals(ACT_REGISTRO_ALUMNO)){		
+			RegistroAlumno.run();
+			
+		}else if(e.getActionCommand().equals(ACT_REGISTRO_PERSONAL)){		
+			RegistroPersonal.run();
 			
 		}else if(e.getActionCommand().equals(ACT_REGISTRO_HUELLA)){
 			try{
@@ -240,7 +256,7 @@ public class Principal implements ActionListener {
 				try {
 					m_reader = m_collection.get(0);
 					//Capabilities.Show(m_reader);
-					Asistencia.Run(m_reader, false);
+					Asistencia.Run(m_reader, false, icono.getImage());
 				}catch (ArrayIndexOutOfBoundsException ee) {
 					MessageBox.Warning("No hay lector de huellas conectado");
 				} 
