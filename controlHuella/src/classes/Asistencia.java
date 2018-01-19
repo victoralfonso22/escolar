@@ -56,17 +56,21 @@ public class Asistencia
     public List<Fmd> m_fmdList = new ArrayList<Fmd>();
     public Fmd[] m_fmdArray = null;
     JLabel lblNombre;
+    JLabel labelTipo;
+    JLabel labelImagen;
     private Timer machineMoveTimer;
     private boolean corriendo;
     
 	
-	ImageIcon imagen1, imagenHuella; //declaro 3 variables del tipo iamgen
+	ImageIcon imagen1, imagenHuella, error, check; //declaro 3 variables del tipo iamgen
     
 	private Asistencia(Reader reader, boolean bStreaming){
 		corriendo = true;
 		
 		imagen1 = new ImageIcon(getClass().getResource("/imagenes/manos-blancas-colorea.jpg"));
 		imagenHuella = new ImageIcon(getClass().getResource("/imagenes/huella.png"));
+		error = new ImageIcon(getClass().getResource("/imagenes/error.png"));
+		check = new ImageIcon(getClass().getResource("/imagenes/check.png"));
 		
 		
 		setBorder(new LineBorder(Color.BLACK));
@@ -114,20 +118,19 @@ public class Asistencia
 								
 								GroupLayout groupLayout = new GroupLayout(this);
 								groupLayout.setHorizontalGroup(
-									groupLayout.createParallelGroup(Alignment.LEADING)
-										.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-												.addGroup(groupLayout.createSequentialGroup()
-													.addContainerGap()
-													.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE))
-												.addGroup(groupLayout.createSequentialGroup()
-													.addGap(109)
-													.addComponent(m_image, GroupLayout.PREFERRED_SIZE, 313, GroupLayout.PREFERRED_SIZE)))
-											.addPreferredGap(ComponentPlacement.RELATED)
-											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-												.addComponent(btnBack, GroupLayout.PREFERRED_SIZE, 123, GroupLayout.PREFERRED_SIZE)
-												.addComponent(panel, GroupLayout.PREFERRED_SIZE, 618, GroupLayout.PREFERRED_SIZE))
-											.addGap(53))
+									groupLayout.createParallelGroup(Alignment.TRAILING)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addContainerGap()
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+												.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+												.addComponent(m_image, GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE))
+											.addGap(18)
+											.addComponent(panel, GroupLayout.PREFERRED_SIZE, 909, GroupLayout.PREFERRED_SIZE)
+											.addGap(51))
+										.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+											.addGap(469)
+											.addComponent(btnBack, GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
+											.addGap(694))
 								);
 								groupLayout.setVerticalGroup(
 									groupLayout.createParallelGroup(Alignment.LEADING)
@@ -136,34 +139,48 @@ public class Asistencia
 												.addGroup(groupLayout.createSequentialGroup()
 													.addGap(51)
 													.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE)
-													.addGap(18)
+													.addPreferredGap(ComponentPlacement.UNRELATED)
 													.addComponent(m_image, GroupLayout.PREFERRED_SIZE, 329, GroupLayout.PREFERRED_SIZE))
 												.addGroup(groupLayout.createSequentialGroup()
-													.addGap(40)
+													.addGap(39)
 													.addComponent(panel, GroupLayout.PREFERRED_SIZE, 565, GroupLayout.PREFERRED_SIZE)))
-											.addGap(39)
+											.addPreferredGap(ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
 											.addComponent(btnBack, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
-											.addContainerGap(47, Short.MAX_VALUE))
+											.addGap(47))
 								);
 								
 								lblNombre = new JLabel("");
 								lblNombre.setHorizontalAlignment(SwingConstants.CENTER);
-								lblNombre.setForeground(SystemColor.textHighlight);
-								lblNombre.setFont(new Font("Arial", Font.BOLD, 20));
+								lblNombre.setForeground(new Color(0, 0, 0));
+								lblNombre.setFont(new Font("Arial", Font.BOLD, 45));
+								
+								labelTipo = new JLabel("");
+								labelTipo.setHorizontalAlignment(SwingConstants.CENTER);
+								labelTipo.setForeground(new Color(0, 102, 0));
+								labelTipo.setFont(new Font("Arial", Font.BOLD, 40));
+								
+								labelImagen = new JLabel("");
+								labelImagen.setHorizontalAlignment(SwingConstants.CENTER);
+								labelImagen.setForeground(Color.BLACK);
+								labelImagen.setFont(new Font("Arial", Font.BOLD, 45));
 								GroupLayout gl_panel = new GroupLayout(panel);
 								gl_panel.setHorizontalGroup(
 									gl_panel.createParallelGroup(Alignment.LEADING)
+										.addComponent(labelTipo, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 913, Short.MAX_VALUE)
+										.addComponent(lblNombre, GroupLayout.DEFAULT_SIZE, 913, Short.MAX_VALUE)
 										.addGroup(gl_panel.createSequentialGroup()
-											.addGap(127)
-											.addComponent(lblNombre, GroupLayout.PREFERRED_SIZE, 246, GroupLayout.PREFERRED_SIZE)
-											.addContainerGap(97, Short.MAX_VALUE))
+											.addComponent(labelImagen, GroupLayout.PREFERRED_SIZE, 903, GroupLayout.PREFERRED_SIZE)
+											.addContainerGap())
 								);
 								gl_panel.setVerticalGroup(
 									gl_panel.createParallelGroup(Alignment.LEADING)
 										.addGroup(gl_panel.createSequentialGroup()
-											.addGap(70)
-											.addComponent(lblNombre, GroupLayout.PREFERRED_SIZE, 52, GroupLayout.PREFERRED_SIZE)
-											.addContainerGap(217, Short.MAX_VALUE))
+											.addGap(27)
+											.addComponent(labelTipo, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)
+											.addGap(32)
+											.addComponent(lblNombre, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)
+											.addPreferredGap(ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+											.addComponent(labelImagen, GroupLayout.PREFERRED_SIZE, 258, GroupLayout.PREFERRED_SIZE))
 								);
 								panel.setLayout(gl_panel);
 								setLayout(groupLayout);
@@ -244,10 +261,22 @@ public class Asistencia
 							
 	                        Engine.Candidate[] matches = engine.Identify(fmdCapturado, 0, m_fmdArray, falsepositive_rate, 1);
 	                        if (matches.length == 1) {
+	                        	Metodos metodos = new Metodos();
+	                        	if(metodos.guardarAsistencia(m_listDeHuellas.get(matches[0].fmd_index).getIdUsuario(), m_listDeHuellas.get(matches[0].fmd_index).getTipo_usuario(), m_dlgParent)){
 	                          
 	                        	lblNombre.setText(String.valueOf(m_listDeHuellas.get(matches[0].fmd_index).getNombre_completo()));
+	                        	labelImagen.setIcon(check);
+	                        	if((m_listDeHuellas.get(matches[0].fmd_index).getTipo_usuario() == 1)){
+	                        		labelTipo.setText("Alumno");
+	                        	}else if((m_listDeHuellas.get(matches[0].fmd_index).getTipo_usuario() == 2)){
+	                        		labelTipo.setText("Personal");
+	                        	}
+	                        	}
+	                        	
 	                        }else{
 	                        	lblNombre.setText("No registrado");
+	                        	labelTipo.setText(null);
+	                        	labelImagen.setIcon(error);
 	                        }
 	                        m_image.showImage(evt.capture_result.image);
 						//	JOptionPane.showMessageDialog(m_dlgParent,fmdCapturado.getData()+" "+fmdCapturado.getData().length, "Aviso", JOptionPane.WARNING_MESSAGE);

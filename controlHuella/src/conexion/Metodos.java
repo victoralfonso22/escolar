@@ -170,4 +170,40 @@ public void llenaCombo(Connection conexion, int id_escuela) throws SQLException{
 		  return null;
 		 }
 	
+	
+	public boolean guardarAsistencia(int id_usuario, int tipo_usuario,Component comp){
+		boolean guardo = false;
+		   
+		  Connection connection=null;
+		  Conexion miConexion=new Conexion();
+		  PreparedStatement statement=null;
+		  ResultSet result=null;
+		   
+		  connection=miConexion.getConnection();
+		   
+		  //String consulta="insert into users_in_fmd (FMD) values (?);";
+		  String consulta="insert into asistencia (id_usuario, tipo_usuario) values (?,?);";
+		   
+		  try {
+		   if (connection!=null) {
+		    statement=connection.prepareStatement(consulta);
+		    statement.setInt(1, id_usuario);
+		    statement.setInt(2, tipo_usuario);		    
+		    statement.executeUpdate();		    
+		    guardo = true;
+		   }
+		  } catch (SQLException e) {
+			  JOptionPane.showMessageDialog(comp, "Error en la consulta: "+e.getMessage(), "Aviso", JOptionPane.ERROR_MESSAGE);			  
+		  }finally{
+		   try {
+		    connection.close();
+		    miConexion.desconectar();
+		   } catch (SQLException e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		   }
+		  }
+		  return guardo;
+	}
+	
 }
