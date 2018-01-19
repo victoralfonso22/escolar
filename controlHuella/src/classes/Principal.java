@@ -256,11 +256,11 @@ public class Principal implements ActionListener {
 				try {
 					m_reader = m_collection.get(0);
 					//Capabilities.Show(m_reader);
-					Asistencia.Run(m_reader, false, icono.getImage());
+					
 				}catch (ArrayIndexOutOfBoundsException ee) {
 					MessageBox.Warning("No hay lector de huellas conectado");
 				} 
-				
+				Asistencia.Run(m_reader, false, icono.getImage());
 				}
 			
 	}

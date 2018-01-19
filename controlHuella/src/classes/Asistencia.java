@@ -33,6 +33,7 @@ import javax.swing.ImageIcon;
 
 import conexion.Metodos;
 import clases.Huellas;
+import clases.HuellasComparar;
 import dao.HuellasDAO;
 
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -51,7 +52,7 @@ public class Asistencia
 	private Reader        m_reader;
 	private ImagePanel    m_image;
 	private boolean       m_bStreaming;
-	public List<Huellas> m_listDeHuellas = new ArrayList<Huellas>();
+	public List<HuellasComparar> m_listDeHuellas = new ArrayList<HuellasComparar>();
     public List<Fmd> m_fmdList = new ArrayList<Fmd>();
     public Fmd[] m_fmdArray = null;
     JLabel lblNombre;
@@ -244,7 +245,7 @@ public class Asistencia
 	                        Engine.Candidate[] matches = engine.Identify(fmdCapturado, 0, m_fmdArray, falsepositive_rate, 1);
 	                        if (matches.length == 1) {
 	                          
-	                        	lblNombre.setText(String.valueOf(m_listDeHuellas.get(matches[0].fmd_index).getId()));
+	                        	lblNombre.setText(String.valueOf(m_listDeHuellas.get(matches[0].fmd_index).getNombre_completo()));
 	                        }else{
 	                        	lblNombre.setText("No registrado");
 	                        }
@@ -354,60 +355,13 @@ public class Asistencia
             
 			HuellasDAO huellasDao = new HuellasDAO();
             this.m_listDeHuellas = huellasDao.retornarTodasHuellas();             
-            for (Huellas huellas : this.m_listDeHuellas) {
-            	if(huellas.getIzq_menique() != null){
-            	Fmd fmd = UareUGlobal.GetImporter().ImportFmd(huellas.getIzq_menique(), com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004, com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004);
+            for (HuellasComparar huellas : this.m_listDeHuellas) {            	
+            	Fmd fmd = UareUGlobal.GetImporter().ImportFmd(huellas.getHuella(), com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004, com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004);
                 this.m_fmdList.add(fmd);
-            	}
-            	
-            	if(huellas.getIzq_anular()!= null){                
-            	Fmd fmd1 = UareUGlobal.GetImporter().ImportFmd(huellas.getIzq_anular(), com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004, com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004);
-                this.m_fmdList.add(fmd1);
-            	}
-                
-            	if(huellas.getIzq_medio()!= null){
-            		Fmd fmd2 = UareUGlobal.GetImporter().ImportFmd(huellas.getIzq_medio(), com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004, com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004);
-                this.m_fmdList.add(fmd2);
-            	}
-            	
-            	if(huellas.getIzq_indice()!= null){
-            		Fmd fmd3 = UareUGlobal.GetImporter().ImportFmd(huellas.getIzq_indice(), com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004, com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004);
-                this.m_fmdList.add(fmd3);
-            	}
-                
-            	if(huellas.getIzq_pulgar()!= null){
-            		Fmd fmd4 = UareUGlobal.GetImporter().ImportFmd(huellas.getIzq_pulgar(), com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004, com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004);
-                this.m_fmdList.add(fmd4);
-            	}
-            	
-            	if(huellas.getDer_menique()!= null){
-            		Fmd fmd5 = UareUGlobal.GetImporter().ImportFmd(huellas.getDer_menique(), com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004, com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004);
-                this.m_fmdList.add(fmd5);
-            	}
-                
-            	if(huellas.getDer_anular()!= null){
-            		Fmd fmd6 = UareUGlobal.GetImporter().ImportFmd(huellas.getDer_anular(), com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004, com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004);
-                    this.m_fmdList.add(fmd6);
-                }
-            	
-            	if(huellas.getDer_medio()!= null){
-            		Fmd fmd7 = UareUGlobal.GetImporter().ImportFmd(huellas.getDer_medio(), com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004, com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004);
-                    this.m_fmdList.add(fmd7);
-                }
-            	
-            	if(huellas.getDer_indice()!= null){
-            		Fmd fmd8 = UareUGlobal.GetImporter().ImportFmd(huellas.getDer_indice(), com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004, com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004);
-                    this.m_fmdList.add(fmd8);
-                }
-            	
-            	if(huellas.getDer_pulgar()!= null){
-            		Fmd fmd9 = UareUGlobal.GetImporter().ImportFmd(huellas.getDer_pulgar(), com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004, com.digitalpersona.uareu.Fmd.Format.ANSI_378_2004);
-                    this.m_fmdList.add(fmd9);
-                }
-            	
+            		
             }
             
-            MessageBox.Warning(String.valueOf(this.m_fmdList.size()));
+        //    MessageBox.Warning(String.valueOf(this.m_fmdList.size()));
             
             m_fmdArray = new Fmd[this.m_fmdList.size()];
             
