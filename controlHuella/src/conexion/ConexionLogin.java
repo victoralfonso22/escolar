@@ -3,10 +3,10 @@ package conexion;
 import java.sql.*;
 
 public class ConexionLogin {
-	 private String nombreBd="fundaci1_login";
-	 private String usuario="fundaci1_pruebas";
-	 private String password="Pruebas123";
-	 private String url="jdbc:mysql://50.28.15.189/"+nombreBd;
+	 private String nombreBd="sirensco_login";
+	 private String usuario="sirensco_sirens";
+	 private String password="Proyecto2018";
+	 private String url="jdbc:mysql://198.49.75.66/"+nombreBd;
 	 
 	 Connection conn=null;
 	 //constructor de la clase

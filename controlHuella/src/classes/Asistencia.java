@@ -12,6 +12,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 import javax.swing.Timer;
 
 import com.digitalpersona.uareu.*;
@@ -27,6 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.border.LineBorder;
 import javax.swing.ImageIcon;
@@ -55,16 +57,16 @@ public class Asistencia
 	public List<HuellasComparar> m_listDeHuellas = new ArrayList<HuellasComparar>();
     public List<Fmd> m_fmdList = new ArrayList<Fmd>();
     public Fmd[] m_fmdArray = null;
-    JLabel lblNombre;
-    JLabel labelTipo;
-    JLabel labelImagen;
+    public JLabel lblNombre;
+    public JLabel labelTipo;
+    public JLabel labelImagen;
     private Timer machineMoveTimer;
     private boolean corriendo;
-    
+    boolean status;
 	
 	ImageIcon imagen1, imagenHuella, error, check; //declaro 3 variables del tipo iamgen
     
-	private Asistencia(Reader reader, boolean bStreaming){
+	public Asistencia(Reader reader, boolean bStreaming){
 		corriendo = true;
 		
 		imagen1 = new ImageIcon(getClass().getResource("/imagenes/manos-blancas-colorea.jpg"));
@@ -199,19 +201,23 @@ public class Asistencia
 								panelAlumno.setLayout(gl_panelAlumno);
 	}
 	
+	public Asistencia(){
+		
+	}
+	
 	private void StartCaptureThread(){
 		m_capture = new CaptureThread(m_reader, m_bStreaming, Fid.Format.ANSI_381_2004, Reader.ImageProcessing.IMG_PROC_DEFAULT);
 		m_capture.start(this);
+		
 		//time(this);
 		
 	}
 	
-	public void time(ActionListener action){
-					
-		machineMoveTimer = new Timer(2000,action );
-		machineMoveTimer.start();
+	public void time(){
 		hideImg();
-		lblNombre.setText("");
+		this.lblNombre.setText(null);
+		this.labelTipo.setText(null);
+		this.labelImagen.setIcon(null);
 	}
 	
 
@@ -236,99 +242,141 @@ public class Asistencia
 			}
 	}
 	
-	public void actionPerformed(ActionEvent e){
+	public void actionPerformed(final ActionEvent e){
 		if(e.getActionCommand().equals(ACT_BACK)){
 			//event from "back" button
 			//cancel capture
 			StopCaptureThread();
 		}else if(e.getActionCommand().equals(CaptureThread.ACT_CAPTURE)){
 			
-			Engine engine = UareUGlobal.GetEngine();
 			
-			//event from capture thread
 			
-			CaptureThread.CaptureEvent evt = (CaptureThread.CaptureEvent)e;
-			boolean bCanceled = false;
 			
-			if(null != evt.capture_result){
-				if(null != evt.capture_result.image && Reader.CaptureQuality.GOOD == evt.capture_result.quality){
+			SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+
+
+
+				@Override
+				protected Boolean doInBackground() throws Exception {
 					
-						try{
-							Fmd fmdCapturado = engine.CreateFmd(evt.capture_result.image, Fmd.Format.ANSI_378_2004);
+					Engine engine = UareUGlobal.GetEngine();
+					
+					//event from capture thread
+					
+					CaptureThread.CaptureEvent evt = (CaptureThread.CaptureEvent)e;
+					boolean bCanceled = false;
+					
+					if(null != evt.capture_result){
+						if(null != evt.capture_result.image && Reader.CaptureQuality.GOOD == evt.capture_result.quality){
 							
-							int falsepositive_rate = Engine.PROBABILITY_ONE / 100000;  //target rate is 0.00001							
-						//	MessageBox.Warning(fmdCapturado.toString());
+								try{
+									Fmd fmdCapturado = engine.CreateFmd(evt.capture_result.image, Fmd.Format.ANSI_378_2004);
+									
+									int falsepositive_rate = Engine.PROBABILITY_ONE / 100000;  //target rate is 0.00001							
+								//	MessageBox.Warning(fmdCapturado.toString());
+									
+			                        Engine.Candidate[] matches = engine.Identify(fmdCapturado, 0, m_fmdArray, falsepositive_rate, 1);
+			                        if (matches.length == 1) {
+			                        	Metodos metodos = new Metodos();
+			                        	if(metodos.guardarAsistencia(m_listDeHuellas.get(matches[0].fmd_index).getIdUsuario(), m_listDeHuellas.get(matches[0].fmd_index).getTipo_usuario(), m_dlgParent)){
+			                          
+			                        	lblNombre.setText(String.valueOf(m_listDeHuellas.get(matches[0].fmd_index).getNombre_completo()));
+			                        	labelImagen.setIcon(check);
+			                        	if((m_listDeHuellas.get(matches[0].fmd_index).getTipo_usuario() == 1)){
+			                        		labelTipo.setText("Alumno");
+			                        	}else if((m_listDeHuellas.get(matches[0].fmd_index).getTipo_usuario() == 2)){
+			                        		labelTipo.setText("Personal");
+			                        	}
+			                        	}
+			                        	
+			                        }else{
+			                        	lblNombre.setText("No registrado");
+			                        	labelTipo.setText(null);
+			                        	labelImagen.setIcon(error);
+			                        }
+			                        m_image.showImage(evt.capture_result.image);
+			                        return true;
+								//	JOptionPane.showMessageDialog(m_dlgParent,fmdCapturado.getData()+" "+fmdCapturado.getData().length, "Aviso", JOptionPane.WARNING_MESSAGE);
+								//	ByteArrayInputStream fingerprintInfo = new ByteArrayInputStream(fmdCapturado.getData());
+								//	Integer fingerprintSize = fmdCapturado.getData().length;
+								//	Metodos met = new Metodos();
+								//	met.guardarFDM(fingerprintInfo,fingerprintSize,m_dlgParent);
+								//	byte[] result =	met.regresarFDM(m_dlgParent);
+								//	JOptionPane.showMessageDialog(m_dlgParent,result, "Aviso", JOptionPane.WARNING_MESSAGE);
+								//	Fmd fmdOtro = UareUGlobal.GetImporter().ImportFmd(result, com.digitalpersona.uareu.Fmd.Format.DP_REG_FEATURES, com.digitalpersona.uareu.Fmd.Format.DP_REG_FEATURES);
+								//	JOptionPane.showMessageDialog(m_dlgParent,fmdOtro.getData()+" "+fmdOtro.getData().length, "Aviso", JOptionPane.WARNING_MESSAGE);
+								}
+								catch(UareUException ev){ MessageBox.DpError("Engine.CreateFmd()", ev); }
+								
+							//display image
 							
-	                        Engine.Candidate[] matches = engine.Identify(fmdCapturado, 0, m_fmdArray, falsepositive_rate, 1);
-	                        if (matches.length == 1) {
-	                        	Metodos metodos = new Metodos();
-	                        	if(metodos.guardarAsistencia(m_listDeHuellas.get(matches[0].fmd_index).getIdUsuario(), m_listDeHuellas.get(matches[0].fmd_index).getTipo_usuario(), m_dlgParent)){
-	                          
-	                        	lblNombre.setText(String.valueOf(m_listDeHuellas.get(matches[0].fmd_index).getNombre_completo()));
-	                        	labelImagen.setIcon(check);
-	                        	if((m_listDeHuellas.get(matches[0].fmd_index).getTipo_usuario() == 1)){
-	                        		labelTipo.setText("Alumno");
-	                        	}else if((m_listDeHuellas.get(matches[0].fmd_index).getTipo_usuario() == 2)){
-	                        		labelTipo.setText("Personal");
-	                        	}
-	                        	}
-	                        	
-	                        }else{
-	                        	lblNombre.setText("No registrado");
-	                        	labelTipo.setText(null);
-	                        	labelImagen.setIcon(error);
-	                        }
-	                        m_image.showImage(evt.capture_result.image);
-						//	JOptionPane.showMessageDialog(m_dlgParent,fmdCapturado.getData()+" "+fmdCapturado.getData().length, "Aviso", JOptionPane.WARNING_MESSAGE);
-						//	ByteArrayInputStream fingerprintInfo = new ByteArrayInputStream(fmdCapturado.getData());
-						//	Integer fingerprintSize = fmdCapturado.getData().length;
-						//	Metodos met = new Metodos();
-						//	met.guardarFDM(fingerprintInfo,fingerprintSize,m_dlgParent);
-						//	byte[] result =	met.regresarFDM(m_dlgParent);
-						//	JOptionPane.showMessageDialog(m_dlgParent,result, "Aviso", JOptionPane.WARNING_MESSAGE);
-						//	Fmd fmdOtro = UareUGlobal.GetImporter().ImportFmd(result, com.digitalpersona.uareu.Fmd.Format.DP_REG_FEATURES, com.digitalpersona.uareu.Fmd.Format.DP_REG_FEATURES);
-						//	JOptionPane.showMessageDialog(m_dlgParent,fmdOtro.getData()+" "+fmdOtro.getData().length, "Aviso", JOptionPane.WARNING_MESSAGE);
+							//System.out.println("Nombre2 "+m_image.getName());					
+							corriendo =false;
+							//WaitBeforeCaptureThread();
 						}
-						catch(UareUException ev){ MessageBox.DpError("Engine.CreateFmd()", ev); }
+						else if(Reader.CaptureQuality.CANCELED == evt.capture_result.quality){
+							//capture or streaming was canceled, just quit
+							bCanceled = true;
+						}
+						else{
+							//bad quality
+							MessageBox.BadQuality(evt.capture_result.quality);
+						}
 						
-					//display image
+					}
+					else if(null != evt.exception){
+						//exception during capture
+						MessageBox.DpError("Capture",  evt.exception);
+						bCanceled = true;
+					}
+					else if(null != evt.reader_status){
+						MessageBox.BadStatus(evt.reader_status);
+						bCanceled = true;
+					}
 					
-					//System.out.println("Nombre2 "+m_image.getName());					
-					corriendo =false;
-					//WaitBeforeCaptureThread();
-				}
-				else if(Reader.CaptureQuality.CANCELED == evt.capture_result.quality){
-					//capture or streaming was canceled, just quit
-					bCanceled = true;
-				}
-				else{
-					//bad quality
-					MessageBox.BadQuality(evt.capture_result.quality);
+					if(!bCanceled){
+						if(!m_bStreaming){
+							//restart capture thread
+							WaitForCaptureThread();
+							StartCaptureThread();
+						}
+					}
+					else{
+						//destroy dialog
+						m_dlgParent.setVisible(false);
+					}
+					
+					return false;
 				}
 				
-			}
-			else if(null != evt.exception){
-				//exception during capture
-				MessageBox.DpError("Capture",  evt.exception);
-				bCanceled = true;
-			}
-			else if(null != evt.reader_status){
-				MessageBox.BadStatus(evt.reader_status);
-				bCanceled = true;
-			}
+				
+				 protected void done() {				 
+					     status = false;
+					     
+					     try {
+					      status = get();				 
+					      }  catch (ExecutionException | InterruptedException e) {
+							e.printStackTrace();
+						}
+					     if(status){
+					    	 try {
+								Thread.sleep(3000);
+								time();
+								WaitForCaptureThread();
+								StartCaptureThread();
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} 
+					     }
+					 
+					    }
+
+				
+			};
+			 worker.execute();
 			
-			if(!bCanceled){
-				if(!m_bStreaming){
-					//restart capture thread
-					WaitForCaptureThread();
-					StartCaptureThread();
-				}
-			}
-			else{
-				//destroy dialog
-				m_dlgParent.setVisible(false);
-			}
-	
+			
 		}
 		
 	}

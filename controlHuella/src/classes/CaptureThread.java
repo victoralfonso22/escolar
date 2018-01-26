@@ -2,6 +2,9 @@ package classes;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.SwingWorker;
 
 import com.digitalpersona.uareu.*;
 
@@ -31,6 +34,8 @@ public class CaptureThread extends Thread
 	private Fid.Format             m_format;
 	private Reader.ImageProcessing m_proc;
 	private CaptureEvent m_last_capture;
+	
+	boolean status;
 	
 	public CaptureThread(Reader reader, boolean bStream, Fid.Format img_format, Reader.ImageProcessing img_proc){
 		m_bCancel = false;
@@ -170,6 +175,54 @@ public class CaptureThread extends Thread
 		});
 	}
 	
+	/*private void NotifyListener(String action, Reader.CaptureResult cr, Reader.Status st, UareUException ex){
+		final CaptureEvent evt = new CaptureEvent(this, action, cr, st, ex);
+		
+		//store last capture event
+		m_last_capture = evt; 
+
+		if(null == m_listener || null == action || action.equals("")) return;
+		
+		//invoke listener on EDT thread
+		SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+
+
+
+			@Override
+			protected Boolean doInBackground() throws Exception {
+				
+				m_listener.actionPerformed(evt);
+				return true;
+			}
+			
+			
+			 protected void done() {				 
+				     status = false;
+				     
+				     try {
+				      status = get();				 
+				      }  catch (ExecutionException | InterruptedException e) {
+						e.printStackTrace();
+					}
+				     if(status){
+				    	 try {
+							Thread.sleep(2000);
+							Asistencia asistencia = new Asistencia(null,false);
+							asistencia.time();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} 
+				     }
+				 
+				    }
+
+			
+		};
+		 worker.execute();
+
+	}
+	*/
 	public void cancel(){
 		m_bCancel = true;
 		try{
