@@ -73,6 +73,7 @@ public class Asistencia
 		imagenHuella = new ImageIcon(getClass().getResource("/imagenes/huella.png"));
 		error = new ImageIcon(getClass().getResource("/imagenes/error.png"));
 		check = new ImageIcon(getClass().getResource("/imagenes/check.png"));
+		//imagenHuella = new ImageIcon(getClass().getResource("/imagenes/huella2.png"));
 		
 		
 		setBorder(new LineBorder(Color.BLACK));
@@ -107,7 +108,7 @@ public class Asistencia
 								m_image.setForeground(new Color(255, 0, 0));
 								m_image.setBorder(BorderFactory.createLineBorder(Color.BLUE, 1));
 								
-								JLabel lblNewLabel = new JLabel("Huella dactilar");
+								JLabel lblNewLabel = new JLabel("Coloque su dedo en el lector de huellas");
 								lblNewLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 								lblNewLabel.setForeground(new Color(0, 102, 0));
 								lblNewLabel.setFont(new Font("Arial", Font.BOLD, 16));
@@ -201,9 +202,7 @@ public class Asistencia
 								panelAlumno.setLayout(gl_panelAlumno);
 	}
 	
-	public Asistencia(){
-		
-	}
+
 	
 	private void StartCaptureThread(){
 		m_capture = new CaptureThread(m_reader, m_bStreaming, Fid.Format.ANSI_381_2004, Reader.ImageProcessing.IMG_PROC_DEFAULT);
@@ -461,7 +460,7 @@ public class Asistencia
 	
 	
 	public static void Run(Reader reader, boolean bStreaming, Image im){
-    	JDialog dlg = new JDialog((JDialog)null, "Captura de huellas dactilares.", true);
+    	JDialog dlg = new JDialog((JDialog)null, "Registro de asistencia por huella.", true);
     	dlg.setResizable(true);
     	dlg.setIconImage(im);
     	Asistencia capture = new Asistencia(reader, bStreaming);

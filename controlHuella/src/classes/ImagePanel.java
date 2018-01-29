@@ -2,7 +2,9 @@ package classes;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
@@ -23,8 +25,13 @@ public class ImagePanel
 	} 
 	
 	public void hideImage(ImageIcon image){		
-		m_image =new BufferedImage(image.getIconWidth(), image.getIconHeight(), BufferedImage.TYPE_BYTE_GRAY);
-		repaint();
+		try {
+			m_image = ImageIO.read(this.getClass().getResource("/imagenes/huella.png"));
+			repaint();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	} 
 	
 
