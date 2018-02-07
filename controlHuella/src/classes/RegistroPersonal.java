@@ -762,7 +762,7 @@ public class RegistroPersonal implements ActionListener {
 				String fechaNac = anio+"/"+mes+"/"+dia;
 				if(alumnoDao.guardarAlumno(textNombre.getText(), textCurp.getText(), fechaNac, textEdad.getText(), 
 						idGrado, textTutorNom.getText(), textTutorOcupa.getText(), textCalle.getText(), textNumCasa.getText(), textColonia.getText(), textCp.getText(), 
-						textNumeroTel.getText(), 1, frmRegistro)){
+						textNumeroTel.getText(),"prueba", 1, frmRegistro)){
 					textNombre.setText(null);
 					textCurp.setText(null);					
 					dateFechaNacimiento.setDate(null);

@@ -17,7 +17,7 @@ import clases.Grados;
 public class AlumnoDAO {
 	
 	public boolean guardarAlumno(String nombre_completo, String curp, String fecha_nacimiento, String edad, int id_grado, String nombre_tutor, String ocupacion_tutor, 
-			String calle_tutor, String numero_calle_tutor, String colonia_tutor, String cp_tutor, String tel_tutor, int estatus,JDialog comp) {
+			String calle_tutor, String numero_calle_tutor, String colonia_tutor, String cp_tutor, String tel_tutor,String tipo_sangre, int estatus,JDialog comp) {
 		   
 		  Connection connection=null;
 		  Conexion miConexion=new Conexion();
@@ -26,8 +26,8 @@ public class AlumnoDAO {
 		  connection=miConexion.getConnection();
 		   
 		  String consulta="insert into alumnos "
-		  		+ "(nombre_completo, curp, fecha_nacimiento, edad, id_grado, nombre_tutor, ocupacion_tutor, calle_tutor,numero_calle_tutor,colonia_tutor, cp_tutor,tel_tutor,estatus) "
-		  		+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		  		+ "(nombre_completo, curp, fecha_nacimiento, edad, id_grado, nombre_tutor, ocupacion_tutor, calle_tutor,numero_calle_tutor,colonia_tutor, cp_tutor,tel_tutor,tipo_sangre,estatus) "
+		  		+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		   
 		  try {
 		   if (connection!=null) {
@@ -44,7 +44,8 @@ public class AlumnoDAO {
 		    statement.setString(10, colonia_tutor);
 		    statement.setString(11, cp_tutor);
 		    statement.setString(12, tel_tutor);
-		    statement.setInt(13, estatus);
+		    statement.setString(13, tipo_sangre);
+		    statement.setInt(14, estatus);
 		    statement.executeUpdate();
 		    
 		    return true;

@@ -109,6 +109,9 @@ public class RegistroAlumno implements ActionListener {
 	private JTextField textCp;
 	private JTextField textNumeroTel;
 	
+	private JComboBox boxSangre;
+	private JLabel labelSangre;
+	
 	private JComboBox comboGrado;
 	private JLabel labelGrado;
 	String fechaConFormato;
@@ -305,7 +308,7 @@ public class RegistroAlumno implements ActionListener {
 		dateFechaNacimiento = new JDateChooser();
 		dateFechaNacimiento.setFont(new Font("Arial", Font.BOLD, 14));
 		dateFechaNacimiento.setToolTipText("dd/MM/YYYY");
-		dateFechaNacimiento.setDateFormatString("dd/MM/YYYY");
+		//dateFechaNacimiento.setDateFormatString("dd/MM/YYYY");
 		dateFechaNacimiento.addPropertyChangeListener("date", new PropertyChangeListener() {
 			
 			DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -379,6 +382,24 @@ public class RegistroAlumno implements ActionListener {
 		lblDatosGeneralesDel = new JLabel("Datos generales del alumno");
 		lblDatosGeneralesDel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDatosGeneralesDel.setFont(new Font("Arial", Font.BOLD, 15));
+		
+		labelSangre = new JLabel("Tipo de sangre");
+		labelSangre.setForeground(new Color(0, 102, 0));
+		labelSangre.setFont(new Font("Arial", Font.BOLD, 14));
+		
+		boxSangre = new JComboBox();
+		boxSangre.setFont(new Font("Arial", Font.BOLD, 14));
+		boxSangre.setBackground(Color.WHITE);
+		boxSangre.addItem("Selecciona");
+		boxSangre.addItem("O-");
+		boxSangre.addItem("O+");
+		boxSangre.addItem("A-");
+		boxSangre.addItem("A+");
+		boxSangre.addItem("B-");
+		boxSangre.addItem("B+");
+		boxSangre.addItem("AB-");
+		boxSangre.addItem("AB+");
+		
 		GroupLayout gl_panelAlumno = new GroupLayout(panelAlumno);
 		gl_panelAlumno.setHorizontalGroup(
 			gl_panelAlumno.createParallelGroup(Alignment.LEADING)
@@ -407,7 +428,11 @@ public class RegistroAlumno implements ActionListener {
 									.addGap(112)
 									.addComponent(labelGrado)
 									.addGap(18)
-									.addComponent(comboGrado, GroupLayout.PREFERRED_SIZE, 265, GroupLayout.PREFERRED_SIZE)))
+									.addComponent(comboGrado, GroupLayout.PREFERRED_SIZE, 265, GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_panelAlumno.createSequentialGroup()
+									.addComponent(labelSangre, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addComponent(boxSangre, GroupLayout.PREFERRED_SIZE, 265, GroupLayout.PREFERRED_SIZE)))
 							.addGap(33))
 						.addGroup(gl_panelAlumno.createSequentialGroup()
 							.addGap(147)
@@ -485,7 +510,11 @@ public class RegistroAlumno implements ActionListener {
 						.addGroup(gl_panelAlumno.createSequentialGroup()
 							.addGap(26)
 							.addComponent(comboGrado, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-					.addPreferredGap(ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+					.addGap(21)
+					.addGroup(gl_panelAlumno.createParallelGroup(Alignment.BASELINE)
+						.addComponent(labelSangre, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE)
+						.addComponent(boxSangre, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
 					.addComponent(lblDatosDelPadre, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
 					.addGap(34)
 					.addGroup(gl_panelAlumno.createParallelGroup(Alignment.LEADING)
@@ -713,6 +742,15 @@ public class RegistroAlumno implements ActionListener {
 					}else{
 						comboGrado.setBorder(new LineBorder(Color.decode("#7A8A99")));
 					}
+				
+				if(boxSangre.getSelectedItem().equals("Selecciona")){
+					boxSangre.setBorder(new LineBorder(Color.RED));
+					
+					bandera = false;
+					mensaje = mensaje+"	- Tipo de sangre \n";
+					}else{
+						boxSangre.setBorder(new LineBorder(Color.decode("#7A8A99")));
+					}
 		//	}
 			
 			
@@ -721,13 +759,16 @@ public class RegistroAlumno implements ActionListener {
 			
 			}else{
 				AlumnoDAO alumnoDao = new AlumnoDAO();
-				String anio = String.valueOf(dateFechaNacimiento.getDate().getYear());
+				/*String anio = String.valueOf(dateFechaNacimiento.getDate().getYear());
 				String mes = String.valueOf(dateFechaNacimiento.getDate().getMonth());
-				String dia = String.valueOf(dateFechaNacimiento.getDate().getDay());
-				String fechaNac = anio+"/"+mes+"/"+dia;
+				String dia = String.valueOf(dateFechaNacimiento.getDate().getDay());*/
+				
+				SimpleDateFormat format = new SimpleDateFormat("YYYY/MM/dd");
+				String fechaNac = format.format(dateFechaNacimiento.getDate()).toString();
+				
 				if(alumnoDao.guardarAlumno(textNombre.getText(), textCurp.getText(), fechaNac, textEdad.getText(), 
 						idGrado, textTutorNom.getText(), textTutorOcupa.getText(), textCalle.getText(), textNumCasa.getText(), textColonia.getText(), textCp.getText(), 
-						textNumeroTel.getText(), 1, frmRegistro)){
+						textNumeroTel.getText(),boxSangre.getSelectedItem().toString(), 1, frmRegistro)){
 					textNombre.setText(null);
 					textCurp.setText(null);					
 					dateFechaNacimiento.setDate(null);
@@ -740,6 +781,7 @@ public class RegistroAlumno implements ActionListener {
 					textColonia.setText(null);
 					textCp.setText(null);
 					textNumeroTel.setText(null);
+					boxSangre.setSelectedIndex(0);
 					JOptionPane.showMessageDialog(frmRegistro, "Alumno guardado!", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 				}else{
 					JOptionPane.showMessageDialog(frmRegistro, "No se puede guardar el alumno!", "Error", JOptionPane.ERROR_MESSAGE);
