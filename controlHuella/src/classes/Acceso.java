@@ -229,8 +229,7 @@ public class Acceso implements ActionListener {
 		);
 		frmSistemaDeResgistro.getContentPane().setLayout(groupLayout);
 	}
-	
-	
+		
 	// Acciones de botones
 	public void actionPerformed(ActionEvent e) {		
 		if(e.getActionCommand().equals(ACT_SALIR)){		
