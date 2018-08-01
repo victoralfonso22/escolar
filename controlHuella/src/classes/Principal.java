@@ -155,18 +155,6 @@ public class Principal implements ActionListener {
 		btnAsistencia.setActionCommand(ACT_ASISTENCIA);
 		btnAsistencia.addActionListener(this);
 		
-		
-		// Boton para salir de la ventana
-		JButton btnRegistroAlumnos = new JButton();
-		btnRegistroAlumnos.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnRegistroAlumnos.setHorizontalTextPosition(SwingConstants.CENTER);
-		btnRegistroAlumnos.setText("Alta de estudiantes");
-		btnRegistroAlumnos.setForeground(Color.WHITE);
-		btnRegistroAlumnos.setBackground(new Color(0, 102, 0));
-		btnRegistroAlumnos.setFont(new Font("Arial", Font.BOLD, 16));
-		btnRegistroAlumnos.setActionCommand(ACT_REGISTRO_ALUMNO);
-		btnRegistroAlumnos.addActionListener(this);
-		
 		JButton btnRegistroDeHuella = new JButton("Registro de huella");
 		btnRegistroDeHuella.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnRegistroDeHuella.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -192,14 +180,14 @@ public class Principal implements ActionListener {
 				.addComponent(lblRegistro, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 757, Short.MAX_VALUE)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(83)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnAsistencia, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnRegistroDeHuella, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))
-					.addGap(112)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnSalir, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnRegistroAlumnos, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))
+					.addComponent(btnAsistencia, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE)
+					.addGap(98)
+					.addComponent(btnRegistroDeHuella, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap(92, Short.MAX_VALUE))
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGap(250)
+					.addComponent(btnSalir, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(272, Short.MAX_VALUE))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -207,14 +195,12 @@ public class Principal implements ActionListener {
 					.addContainerGap()
 					.addComponent(lblRegistro)
 					.addGap(51)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-						.addComponent(btnRegistroAlumnos, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(btnAsistencia, GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE))
-					.addGap(40)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnRegistroDeHuella, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnSalir, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE))
-					.addGap(57))
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(btnAsistencia, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnRegistroDeHuella, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE))
+					.addGap(43)
+					.addComponent(btnSalir, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE)
+					.addGap(54))
 		);
 		frmSistemaDeResgistro.getContentPane().setLayout(groupLayout);
 	}

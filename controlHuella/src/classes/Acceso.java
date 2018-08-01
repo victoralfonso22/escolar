@@ -188,9 +188,9 @@ public class Acceso implements ActionListener {
 			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addComponent(lblRegistro, GroupLayout.DEFAULT_SIZE, 642, Short.MAX_VALUE)
 				.addGroup(groupLayout.createSequentialGroup()
+					.addGap(116)
 					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
 								.addComponent(lblContrasea, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE))
@@ -200,9 +200,8 @@ public class Acceso implements ActionListener {
 								.addComponent(textField, GroupLayout.PREFERRED_SIZE, 263, GroupLayout.PREFERRED_SIZE))
 							.addPreferredGap(ComponentPlacement.RELATED))
 						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(116)
 							.addComponent(btnIngresar, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, 134, Short.MAX_VALUE)
+							.addGap(102)
 							.addComponent(btnSalir, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE)))
 					.addGap(148))
 		);
@@ -224,8 +223,8 @@ public class Acceso implements ActionListener {
 						.addComponent(textContrasena, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
 					.addGap(71)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnIngresar, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnSalir, GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE))
+						.addComponent(btnSalir, GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
+						.addComponent(btnIngresar, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE))
 					.addGap(83))
 		);
 		frmSistemaDeResgistro.getContentPane().setLayout(groupLayout);
