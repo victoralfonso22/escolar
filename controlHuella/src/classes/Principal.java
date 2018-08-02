@@ -164,7 +164,7 @@ public class Principal implements ActionListener {
 		btnRegistroDeHuella.setActionCommand(ACT_REGISTRO_HUELLA);
 		btnRegistroDeHuella.addActionListener(this);
 		
-		JButton btnSalir = new JButton("Salir1");
+		JButton btnSalir = new JButton("Salir");
 		btnSalir.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSalir.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnSalir.setForeground(Color.WHITE);
