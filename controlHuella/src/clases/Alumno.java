@@ -4,6 +4,8 @@ public class Alumno {
 	
 	private int id;
 	private String nombre_completo;
+	private String apellido_p;
+	private String apellido_m;
 	private String curp;
 	private String fecha_nacimiento;
 	private String edad;
@@ -17,11 +19,13 @@ public class Alumno {
 	private String tel_tutor;
 	private int estatus;
 	
-	public Alumno(int id,String nombre_completo, String curp, String fecha_nacimiento, String edad, int id_grado, String nombre_tutor, String ocupacion_tutor, String calle_tutor,
+	public Alumno(int id,String nombre_completo, String apellido_p, String apellido_m, String curp, String fecha_nacimiento, String edad, int id_grado, String nombre_tutor, String ocupacion_tutor, String calle_tutor,
 				int numero_calle_tutor, String colonia_tutor, String cp_tutor, String tel_tutor, int estatus){
 		
 		this.setId(id);
 		this.setNombre_completo(nombre_completo);
+		this.apellido_p = apellido_p;
+		this.apellido_m = apellido_m;
 		this.setCurp(curp);
 		this.setFecha_nacimiento(fecha_nacimiento);
 		this.setEdad(edad);
@@ -178,6 +182,27 @@ public class Alumno {
 	}  
 	
 	public String toString(){
-		return nombre_completo;
+		return nombre_completo+" "+apellido_p+" "+apellido_m;
 	}
+
+
+	public String getApellido_p() {
+		return apellido_p;
+	}
+
+
+	public void setApellido_p(String apellido_p) {
+		this.apellido_p = apellido_p;
+	}
+
+
+	public String getApellido_m() {
+		return apellido_m;
+	}
+
+
+	public void setApellido_m(String apellido_m) {
+		this.apellido_m = apellido_m;
+	}
+	
 }

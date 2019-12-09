@@ -342,7 +342,7 @@ public class RegistroHuella implements ActionListener {
 					if(bandera == 1){
 					alumnoSeleccionado = (Alumno) e.getItem();
 					if(alumnoSeleccionado.getId()!=0){
-					lblNombre.setText(alumnoSeleccionado.getNombre_completo());
+					lblNombre.setText(alumnoSeleccionado.getNombre_completo()+" "+alumnoSeleccionado.getApellido_p()+" "+alumnoSeleccionado.getApellido_m());
 					labelCurp.setText(alumnoSeleccionado.getCurp());
 					labelFechaNacimiento.setText(alumnoSeleccionado.getFecha_nacimiento());
 					labelEdad.setText(alumnoSeleccionado.getEdad());
@@ -396,16 +396,16 @@ public class RegistroHuella implements ActionListener {
 					AlumnoDAO alumnoDao = new AlumnoDAO();
 					ArrayList < Alumno > listaAlumnos = alumnoDao.retornaAlumno(gradoSeleccionado.getId(), frmRegistroHuella);	
 					
-					vectorAlumno.addElement(new Alumno(0,"Selecciona","","","",0,"","","",0,"","","",0));
+					vectorAlumno.addElement(new Alumno(0,"Selecciona","","","","","",0,"","","",0,"","","",0));
 					for (int i = 0; i < listaAlumnos.size(); i++) {
-						vectorAlumno.addElement(new Alumno(listaAlumnos.get(i).getId(),listaAlumnos.get(i).getNombre_completo(),listaAlumnos.get(i).getCurp(),listaAlumnos.get(i).getFecha_nacimiento(),
+						vectorAlumno.addElement(new Alumno(listaAlumnos.get(i).getId(),listaAlumnos.get(i).getNombre_completo(),listaAlumnos.get(i).getApellido_p(),listaAlumnos.get(i).getApellido_m(),listaAlumnos.get(i).getCurp(),listaAlumnos.get(i).getFecha_nacimiento(),
 								listaAlumnos.get(i).getEdad(),listaAlumnos.get(i).getId_grado(),listaAlumnos.get(i).getNombre_tutor(),listaAlumnos.get(i).getOcupacion_tutor(),listaAlumnos.get(i).getCalle_tutor(),
 								listaAlumnos.get(i).getNumero_calle_tutor(),listaAlumnos.get(i).getColonia_tutor(),listaAlumnos.get(i).getCp_tutor(),listaAlumnos.get(i).getTel_tutor(),listaAlumnos.get(i).getEstatus()));		
 					}
 					
 					}else{
 						comboBoxNombre.removeAllItems();
-						vectorAlumno.addElement(new Alumno(0,"Selecciona","","","",0,"","","",0,"","","",0));	
+						vectorAlumno.addElement(new Alumno(0,"Selecciona","","","","","",0,"","","",0,"","","",0));	
 					}
 					comboBoxNombre.setModel(new DefaultComboBoxModel(vectorAlumno));
 					alumnoSeleccionado = (Alumno) comboBoxNombre.getSelectedItem();
@@ -428,7 +428,6 @@ public class RegistroHuella implements ActionListener {
 		for (int i = 0; i < listaGrados.size(); i++) {
 			vector.addElement(new Grados(listaGrados.get(i).getId(),listaGrados.get(i).getGrado()));		
 		}
-		comboGrado.setModel(new DefaultComboBoxModel(vector));
 		gradoSeleccionado = (Grados) comboGrado.getSelectedItem();
 		idGrado = gradoSeleccionado.getId() ;		
 		

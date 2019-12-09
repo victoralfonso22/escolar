@@ -90,7 +90,7 @@ public class AlumnoDAO {
 		    result=statement.executeQuery();		    
 		    
 		    while(result.next()==true){
-			     alumno=new Alumno(result.getInt("id"),result.getString("nombre_completo"),result.getString("curp"),result.getString("fecha_nacimiento"),result.getString("edad"),id_grado,
+			     alumno=new Alumno(result.getInt("id"),result.getString("nombre_completo"),result.getString("apellido_p"),result.getString("apellido_m"),result.getString("curp"),result.getString("fecha_nacimiento"),result.getString("edad"),id_grado,
 			    		 result.getString("nombre_tutor"),result.getString("ocupacion_tutor"),result.getString("calle_tutor"),result.getInt("numero_calle_tutor"),result.getString("colonia_tutor"),
 			    		 result.getString("cp_tutor"),result.getString("tel_tutor"),1);	     
 			           
